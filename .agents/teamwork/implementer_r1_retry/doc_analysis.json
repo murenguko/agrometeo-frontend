@@ -1,0 +1,2000 @@
+{
+  "total_paragraphs": 499,
+  "total_tables": 16,
+  "total_sections": 1,
+  "sections": [
+    {
+      "index": 0,
+      "page_width_cm": 21.59,
+      "page_height_cm": 27.94,
+      "left_margin_cm": 3.0,
+      "right_margin_cm": 2.5,
+      "top_margin_cm": 2.5,
+      "bottom_margin_cm": 2.5,
+      "header_distance_cm": 1.27,
+      "footer_distance_cm": 1.27,
+      "different_first_page_header_footer": false
+    }
+  ],
+  "headings": [
+    {
+      "idx": 0,
+      "style": "Normal",
+      "text": "INTRODUCTION GÉNÉRALE"
+    },
+    {
+      "idx": 25,
+      "style": "List Bullet",
+      "text": "Chapitre I — État des lieux et diagnostic : Présente le cadre d'étude géographique, caractérise en détail les 5 zones pilotes burundaises (Bujumbura Mairie, Bujumbura Rural scindée en Imbo et Mumirwa, Gitega, Karusi, Rutana), modélise les besoins des usagers à travers trois personas types, définit les contraintes opérationnelles et expose l'étude de faisabilité multidimensionnelle."
+    },
+    {
+      "idx": 26,
+      "style": "List Bullet",
+      "text": "Chapitre II — Étude théorique et état de l'art : Établit l'assise conceptuelle du travail par une confrontation comparative rigoureuse des technologies logicielles contemporaines : architectures client-serveur et patron BFF, frameworks front-end (SvelteKit vs React/Vue/Angular), frameworks back-end (FastAPI vs Django/Node/Spring), bases de données (MongoDB Atlas et SQLite vs PostgreSQL relationnel), protocoles d'échange d'API, sécurité cryptographique (Argon2id, OAuth2, JWT) et accessibilité numérique (WCAG 2.1)."
+    },
+    {
+      "idx": 27,
+      "style": "List Bullet",
+      "text": "Chapitre III — Conception de la solution cible : Formalise l'ensemble des spécifications fonctionnelles (EF-01 à EF-20) et non fonctionnelles (ENF-01 à ENF-10), détaille l'architecture applicative globale, présente la modélisation UML complète (cas d'utilisation, classes, composants, séquences, états-transitions, déploiement physique), décrit le schéma des données, formalise mathématiquement les règles métier agro-climatiques et expose le calendrier Agile Scrum sur deux semaines."
+    },
+    {
+      "idx": 28,
+      "style": "List Bullet",
+      "text": "Chapitre IV — Implémentation et réalisation : Décrit la matérialisation technique de la solution au sein des dépôts weather-backend et weather-app : outillage moderne (Python 3.14, uv, Vite, Svelte 5 en mode Runes), implémentation des routeurs d'authentification et de météo, services de collecte et de calcul pur, composants cartographiques Leaflet et graphiques svelteplot, gestion des cookies sécurisés et politique de gestion des versions Git."
+    },
+    {
+      "idx": 29,
+      "style": "List Bullet",
+      "text": "Chapitre V — Tests, validation et évaluation : Expose le protocole d'assurance qualité et les résultats expérimentaux des tests (31 tests unitaires pytest validés à 100%, compilation de production Vite sans erreur, tests de responsive design et de charge). Ce chapitre intègre la pièce maîtresse de notre étude : une comparaison détaillée, critique et argumentée entre le Document de Cadrage MVP initial et l'Implémentation Réelle, justifiant scientifiquement chaque divergence (zonage territorial, substitution de PostgreSQL par MongoDB, sécurisation avancée Argon2id, retrait du modèle LHASA et cartographie dynamique des cultures ISABU)."
+    },
+    {
+      "idx": 31,
+      "style": "List Bullet",
+      "text": "Annexes et Références : Fournissent les diagrammes UML détaillés (Annexe A), le schéma d'architecture physique de la base de données (Annexe B), le manuel complet d'installation et d'exploitation pas à pas (Annexe D), ainsi que l'arborescence du code et les métriques de qualité logicielle (Annexe F), complétés par les références bibliographiques normalisées au format IEEE."
+    },
+    {
+      "idx": 473,
+      "style": "Normal",
+      "text": "RÉFÉRENCES BIBLIOGRAPHIQUES"
+    }
+  ],
+  "figures": [],
+  "tables_captions": [
+    {
+      "idx": 21,
+      "style": "Normal",
+      "text": "Tableau 0.1 — Objectifs Spécifiques et Indicateurs Mesurables de Succès (SMART)"
+    }
+  ],
+  "bibliography": [
+    {
+      "idx": 33,
+      "style": "Normal",
+      "text": "CHAPITRE I — ÉTAT DES LIEUX ET DIAGNOSTIC"
+    },
+    {
+      "idx": 34,
+      "style": "Normal",
+      "text": "1. Présentation du Cadre d'Étude et Périmètre des Zones Pilotes"
+    },
+    {
+      "idx": 35,
+      "style": "Normal",
+      "text": "Le déploiement s’est fait sur cinq zones pilotes territoriales réelles correspondant aux anciennes provinces administratives du Burundi (Bujumbura Mairie, Bujumbura Rural, Gitega, Karusi, Rutana), en intégrant une distinction topographique et climatique fondamentale pour Bujumbura Rural, subdivisée entre la plaine de l'Imbo et les contreforts montagneux de Mumirwa."
+    },
+    {
+      "idx": 36,
+      "style": "Normal",
+      "text": "Ce découpage repose sur une analyse agro-écologique  de la diversité géographique du pays :"
+    },
+    {
+      "idx": 37,
+      "style": "List Bullet",
+      "text": "1. Bujumbura Mairie (Plaine de l'Imbo, ~820 m) : Située sur les berges nord-est du lac Tanganyika à une altitude moyenne de 820 mètres, cette zone urbaine et périurbaine de plaine alluviale est drainée par plusieurs cours d'eau torrentiels descendant des collines environnantes (Ntahangwa, Muha, Kanyosha, Mutimbuzi). Les vulnérabilités dominantes résident dans les inondations urbaines éclair, l'engorgement des sols sablo-limoneux et les montées des eaux lacustres [4]. Cultures prévalentes associées : riz, maïs, manioc et bananier."
+    },
+    {
+      "idx": 38,
+      "style": "List Bullet",
+      "text": "2. Bujumbura Rural (Zone mixte à fort contraste) : Cette entité territoriale présente un gradient altitudinal extrême s'étendant de 773 mètres (plaine bordière de l'Imbo) à plus de 2 600 mètres (contreforts de Mumirwa et crête Congo-Nil). Face à cette hétérogénéité, le système opère une scission opérationnelle en deux sous-zones bien distinctes :"
+    },
+    {
+      "idx": 39,
+      "style": "List Bullet",
+      "text": "• Sous-zone Imbo (Basse altitude, < 1 000 m) : Altitude inférieure à 1 000 m. Climat tropical chaud et sec de basse altitude, vulnérable aux crues d'inondation des rivières Mugere et Karonke et à l'ensablement des périmètres irrigués. Seuil pluviométrique critique fixé à 50 mm / 24 h. Cultures majeures : riz de bas-fond, maïs de plaine, manioc, bananier."
+    },
+    {
+      "idx": 40,
+      "style": "List Bullet",
+      "text": "• Sous-zone Mumirwa (Hautes terres escarpées, > 1 350 m) : Altitude supérieure à 1 350 m (station de référence à 1 450 m). Pentes fortes (> 30 %), sols ferrallitiques acides hautement sensibles à l'érosion pluviale et au glissement de masse. Seuil critique fixé à 100 mm / 24 h. Cultures majeures : bananeraies d'altitude, maïs, haricot commun, manioc et pomme de terre."
+    },
+    {
+      "idx": 41,
+      "style": "List Bullet",
+      "text": "3. Gitega (Plateau central, 1 650–1 850 m) : Capitale politique du pays, située au cœur des plateaux centraux burundais à une altitude de 1 650 à 1 850 mètres. Le relief collinaire ondulé est caractérisé par un réseau dense de marais cultivés en saison sèche et des collines soumises à un lessivage intense des sols lors des gros orages. Seuil critique de 100 mm / 24 h. Cultures majeures : maïs, haricot, bananier, riz de marais, patate douce et pomme de terre."
+    },
+    {
+      "idx": 42,
+      "style": "List Bullet",
+      "text": "4. Karusi (Bassin de la Ruvubu, 1 500–1 750 m) : Province du centre-est traversée par le bassin versant majeur de la rivière Ruvubu (affluent du Nil) et ses tributaires (Gasenyi, Rusheri). Les bas-fonds marécageux y jouent un rôle stratégique pour la survie alimentaire mais sont exposés à des submersions prolongées, tandis que les collines connaissent des poches de sécheresse intra-saisonnières sévères. Seuil critique : 100 mm / 24 h. Cultures : maïs, haricot, bananier, manioc et patate douce."
+    },
+    {
+      "idx": 43,
+      "style": "List Bullet",
+      "text": "5. Rutana (Sud-Est et Dépression du Kumoso, 1 600–1 800 m) : Région du sud-est marquant la transition entre les escarpements de la crête et les dépressions agro-pastorales chaudes du Kumoso. Alternance marquée de risques de crues de piémont et de déficits hydriques prolongés en fin de saison A. Seuil critique : 100 mm / 24 h. Cultures : riz de dépression, maïs, haricot, manioc et bananier."
+    },
+    {
+      "idx": 44,
+      "style": "Normal",
+      "text": "Tableau 1.1 — Caractérisation géographique et agro-climatique des zones pilotes d'étude"
+    },
+    {
+      "idx": 58,
+      "style": "Normal",
+      "text": "2. Expression et Analyse du Besoin des Parties Prenantes"
+    },
+    {
+      "idx": 59,
+      "style": "Normal",
+      "text": "L'ingénierie des exigences a débuté par une étude minutieuse des attentes exprimées par les différentes strates d'acteurs intervenant dans la chaîne de valeur agro-climatique burundaise. Quatre grandes catégories d'utilisateurs ont été identifiées :"
+    },
+    {
+      "idx": 60,
+      "style": "Normal",
+      "text": "Tableau 1.2 — Matrice des besoins exprimés par typologie d'utilisateurs"
+    },
+    {
+      "idx": 62,
+      "style": "Normal",
+      "text": "3. Modélisation des Personas et Parcours Utilisateurs"
+    },
+    {
+      "idx": 63,
+      "style": "Normal",
+      "text": "Afin de guider la conception de l'expérience utilisateur (UX) et des composants interactifs, trois personas représentatifs ont été élaborés avec leurs scénarios d'usage contextuels :"
+    },
+    {
+      "idx": 64,
+      "style": "Normal",
+      "text": "Persona 1 : Thaddée Ishimwe — L'Encadreur Agricole de Terrain"
+    },
+    {
+      "idx": 65,
+      "style": "List Bullet",
+      "text": "Profil : 38 ans, résidant à Gitega, moniteur agricole communal rattaché à la DPAE."
+    },
+    {
+      "idx": 66,
+      "style": "List Bullet",
+      "text": "Équipement & Connectivité : Smartphone Android, forfait data mobile limité (recharges de 500 Mo), déplacements quotidiens à moto sur les collines."
+    },
+    {
+      "idx": 67,
+      "style": "List Bullet",
+      "text": "Objectif et Scénario : Consulte l'application chaque matin à 6h30 avant sa tournée pour identifier les collines où les agriculteurs étalent leur maïs ou haricot en plein air et déterminer si un risque de pluie torrentielle justifie d'ordonner le bâchage immédiat."
+    },
+    {
+      "idx": 68,
+      "style": "List Bullet",
+      "text": "Frustration majeure : Les bulletins météo radio généralistes diffusent des prévisions nationales globales sans ancrage collinaire ni préconisation pour le séchage."
+    },
+    {
+      "idx": 69,
+      "style": "Normal",
+      "text": "Persona 2 : Chantal Nibigira — La Présidente de Coopérative Rizicole"
+    },
+    {
+      "idx": 70,
+      "style": "List Bullet",
+      "text": "Profil : 44 ans, gestionnaire d'une coopérative de 120 exploitants dans la plaine de l'Imbo (Bujumbura Rural)."
+    },
+    {
+      "idx": 71,
+      "style": "List Bullet",
+      "text": "Équipement & Connectivité : Smartphone , connectivité 3G/4G intermittente."
+    },
+    {
+      "idx": 72,
+      "style": "List Bullet",
+      "text": "Objectif et Scénario : A besoin d'une anticipation hydrologique de 24 à 48 heures lorsque des pluies massives sur les crêtes de Mumirwa menacent de faire gonfler brutalement la rivière Mugere, afin de mobiliser les riziculteurs pour fermer les vannes d'irrigation et consolider les levées de terre entourant les casiers."
+    },
+    {
+      "idx": 73,
+      "style": "List Bullet",
+      "text": "Frustration majeure : L'arrivée brutale des eaux de crue la nuit emporte régulièrement les diguettes fragiles et ensable les parcelles à quelques semaines de la récolte."
+    },
+    {
+      "idx": 74,
+      "style": "Normal",
+      "text": "Persona 3 : Dr. Alexis Manirakiza — Le Chargé de Mission Humanitaire et de Veille"
+    },
+    {
+      "idx": 75,
+      "style": "List Bullet",
+      "text": "Profil : 41 ans, expert en résilience climatique au sein d'un consortium d'ONG intervenant à Karusi et Rutana."
+    },
+    {
+      "idx": 76,
+      "style": "List Bullet",
+      "text": "Équipement & Connectivité : Ordinateur portable et tablette tactile 4G professionnelle au bureau et en mission de terrain."
+    },
+    {
+      "idx": 77,
+      "style": "List Bullet",
+      "text": "Objectif et Scénario : Consulte le tableau de bord pour comparer la situation agro-météorologique des différentes provinces et auditer la rigueur scientifique des modèles (vérification des seuils, des percentiles p75 et des sources de données Copernicus/Open-Meteo)."
+    },
+    {
+      "idx": 78,
+      "style": "List Bullet",
+      "text": "Frustration majeure : Absence d’un accès centralisé aux données et manque de transparence quant aux sources, chaines de calcul, marges d’erreur… des systèmes déjà existants."
+    },
+    {
+      "idx": 81,
+      "style": "Normal",
+      "text": "Figure 1.2 — Diagramme de flux du parcours utilisateur complet"
+    },
+    {
+      "idx": 82,
+      "style": "Normal",
+      "text": "4. Contraintes Globales d'Ingénierie"
+    },
+    {
+      "idx": 83,
+      "style": "Normal",
+      "text": "Le projet est assujetti à un ensemble de contraintes qui ont dicté les choix d'architecture logicielle :"
+    },
+    {
+      "idx": 84,
+      "style": "List Bullet",
+      "text": "Contrainte de connectivité et de bande passante : L'application doit fonctionner de manière fluide sur des réseaux cellulaires 2G/3G burundais à fort taux de gigue et pertes de paquets. Elle doit minimiser la taille des requêtes HTTP et intégrer un mécanisme agressif de mise en cache côté serveur afin de continuer à servir des bulletins valides en cas de déconnexion momentanée des flux internationaux."
+    },
+    {
+      "idx": 85,
+      "style": "List Bullet",
+      "text": "Contrainte d'accessibilité économique et données ouvertes : En tant que prototype universitaire développé sans financement externe, le système doit reposer exclusivement sur des technologies open-source, des bases de données à palier gratuit sans carte bancaire requise (MongoDB Atlas Tier M0 Sandbox) et des API météorologiques gratuites sans clé commerciale bloquante (Open-Meteo, GloFAS via OpenFlood)."
+    },
+    {
+      "idx": 86,
+      "style": "List Bullet",
+      "text": "Contrainte temporelle serrée (délai de 2 semaines) : Le calendrier opérationnel du Projet II de l'UPG imposait une livraison de la première version exploitable en un temps limité. Ce rythme condensé excluait le développement d'architectures distribuées et imposait une focalisation stricte sur le cœur de valeur (SvelteKit, FastAPI, moteur de règles pur)."
+    },
+    {
+      "idx": 87,
+      "style": "List Bullet",
+      "text": "Contrainte d'extensibilité et d'évolutivité : La base logicielle doit être conçue de façon modulaire et extensible, permettant d'accueillir ultérieurement les 18 provinces, de connecter des stations locales IGEBU et d'intégrer d’autres fonctionnalités (ex. passerelles de diffusion non-web (SMS/USSD), modèles statistiques de prédiction,…) ."
+    },
+    {
+      "idx": 88,
+      "style": "Normal",
+      "text": "5. Étude de Faisabilité Multidimensionnelle"
+    },
+    {
+      "idx": 89,
+      "style": "Normal",
+      "text": "La viabilité du projet a fait l'objet d'une analyse d'ingénierie rigoureuse selon quatre dimensions :"
+    },
+    {
+      "idx": 90,
+      "style": "List Bullet",
+      "text": "1. Faisabilité Technique : L'interopérabilité des composants logiciels modernes (SvelteKit 3, FastAPI, MongoDB Atlas, client Python openmeteo-requests et bibliothèque Sveaflet/Leaflet) a été validée expérimentalement. La séparation stricte entre les fonctions de calcul pur (sans état) et les routeurs d'accès aux données confère au système une testabilité et une robustesse raisonnables."
+    },
+    {
+      "idx": 91,
+      "style": "List Bullet",
+      "text": "2. Faisabilité Économique : L'ensemble des technologies mises en œuvre est libre de droits de licence (licences MIT, Apache 2.0, BSD). Les coûts d'infrastructure récurrents pour ce project sont strictement de zéro franc burundais grâce à l'exploitation de services ou de tiers gratuits. Pour les utilisateurs finaux, le poids extrêmement compact de l'application (bundle < 250 Ko) engendre une consommation de données mobile insignifiante (inférieure à 1 Mo par consultation complète)."
+    },
+    {
+      "idx": 92,
+      "style": "List Bullet",
+      "text": "3. Faisabilité Opérationnelle : L'ergonomie de l'interface a été épurée : navigation tactile immédiate depuis la carte d'accueil, bannières d'alerte aux codes couleurs (vert / ambre), formulation pragmatique de chaque avis débutant par un verbe d'action de terrain (« Protégez... », « Surveillez... », « Vérifiez... ») évitant les termes techniques potentiellement obscurs."
+    },
+    {
+      "idx": 93,
+      "style": "List Bullet",
+      "text": "4. Faisabilité Juridique, Éthique et Déontologique : Au Burundi, la délivrance des avis de vigilance officielle et les ordres d'alerte relèvent du monopole exclusif de l'IGEBU et de la Direction Générale de la Protection Civile. AgroMétéo Burundi se positionne explicitement comme un outil expérimental d'aide consultative. Dans l'ensemble du code source, les termes anxiogènes tels que « inondation certaine » ou « évacuation » sont formellement prohibés et remplacés par des consignes de vigilance ciblée (« vérifier l'état des diguettes »). De surcroît, le principe d'intégrité déontologique interdit formellement d'assimiler l'absence de données à une situation sans danger : toute donnée manquante génère le statut explicite 'non_evalue' avec une mise en garde formelle [5]."
+    },
+    {
+      "idx": 94,
+      "style": "Normal",
+      "text": "6. Synthèse du Diagnostic"
+    },
+    {
+      "idx": 95,
+      "style": "Normal",
+      "text": "Le diagnostic approfondi confirme la pertinence et la faisabilité pleine et entière d'un système de veille agro-climatique au Burundi. En comblant le fossé entre les prévisions numériques globales et les décisions paysannes concrètes, AgroMétéo Burundi apporte une réponse logicielle pragmatique et économe en ressources. Les chapitres suivants détaillent les fondements théoriques, la modélisation conceptuelle, l'implémentation effective et la validation expérimentale de cette solution."
+    },
+    {
+      "idx": 99,
+      "style": "Normal",
+      "text": "CHAPITRE II — ÉTUDE THÉORIQUE ET ÉTAT DE L'ART"
+    },
+    {
+      "idx": 100,
+      "style": "Normal",
+      "text": "1. Architecture Client-Serveur"
+    },
+    {
+      "idx": 101,
+      "style": "Normal",
+      "text": "Le génie logiciel contemporain privilégie le découpage des applications d'envergure en systèmes distribués modulaires où la couche de présentation graphique (le client) est strictement isolée de la couche de traitement des données et de logique métier (le serveur) [6]. Ce modèle Client-Serveur résout les limites des architectures monolithiques traditionnelles en permettant une évolution technologique indépendante de chaque sous-système, une scalabilité horizontale et une interopérabilité immédiate avec de futurs clients mobiles natifs ou passerelles USSD."
+    },
+    {
+      "idx": 102,
+      "style": "Normal",
+      "text": "Dans le cadre de notre projet, ce paradigme est transcendé par l'adoption du patron de conception Backend-For-Frontend (BFF), popularisé par Sam Newman [7]. Contrairement à un schéma où le navigateur web dialoguerait directement en mode AJAX/Fetch avec les API du serveur backend, le patron BFF positionne le runtime serveur de SvelteKit (+page.server.js) comme un sas d'intermédiation sécurisé et optimisé entre le navigateur de l'agriculteur et l'API FastAPI :"
+    },
+    {
+      "idx": 104,
+      "style": "Normal",
+      "text": "Figure 2.1 — Diagramme architectural du patron Backend-For-Frontend (BFF)"
+    },
+    {
+      "idx": 105,
+      "style": "Normal",
+      "text": "Ce modèle d'architecture procure des bénéfices majeurs d'ingénierie :"
+    },
+    {
+      "idx": 106,
+      "style": "List Bullet",
+      "text": "Étanchéité cryptographique absolue : Les jetons d'authentification JWT sont stockés dans des cookies munis du drapeau HttpOnly. Le code JavaScript s'exécutant dans le navigateur ne peut jamais y accéder, ce qui neutralise à 100% les risques d'exfiltration de session par faille XSS (Cross-Site Scripting)."
+    },
+    {
+      "idx": 107,
+      "style": "List Bullet",
+      "text": "Élimination des verrous CORS : Puisque les appels vers le serveur FastAPI sont émis de serveur à serveur par Node.js / SvelteKit, le navigateur n'applique aucun blocage d'origine croisée (CORS), éliminant une source majeure de fragilité réseau lors des déploiements."
+    },
+    {
+      "idx": 108,
+      "style": "List Bullet",
+      "text": "Optimisation de la bande passante mobile : Le BFF peut agréger plusieurs sources et formater la charge utile brute avant de la transmettre au composant d'interface, allégeant considérablement le travail de désérialisation sur les processeurs limités des smartphones d'entrée de gamme."
+    },
+    {
+      "idx": 109,
+      "style": "Normal",
+      "text": "2. Framwework Front-End"
+    },
+    {
+      "idx": 110,
+      "style": "Normal",
+      "text": "Le choix de l'architecture d'interface utilisateur a été guidé par les contraintes matérielles et de connectivité propres au contexte de déploiement (notamment sur le réseau mobile burundais et sur des terminaux mobiles aux performances limitées). Les frameworks traditionnels à base de Virtual DOM, tels que React 19 (Next.js) ou Vue.js 3 (Nuxt), imposent un surcoût processeur et mémoire constant : ils embarquent un moteur d'exécution volumineux chargé de comparer en continu des arbres virtuels d'éléments dans la mémoire du téléphone. Quant à Angular 18, sa lourdeur structurelle (bundle de base supérieur à 250 Ko) et sa détection de changements globale via Zone.js le rendent inadapté aux réseaux ruraux dégradés."
+    },
+    {
+      "idx": 111,
+      "style": "Normal",
+      "text": "Svelte 5 (associé à SvelteKit) se distingue fondamentalement par son modèle de compilation sans DOM virtuel. Grâce au système de Runes ($state, $derived, $props), le compilateur transforme le code déclaratif en JavaScript impératif ultra-compact (15 à 30 Ko de socle) qui met directement à jour les nœuds précis du DOM lors d'un changement d'état. Cette légèreté garantit un temps de premier rendu (FCP) inférieur à 1,2 seconde sur un réseau 3G émulé (1,6 Mbps) et préserve l'autonomie de la batterie sur les smartphones d'entrée de gamme. De plus, SvelteKit offre une architecture isomorphic native permettant de gérer le rendu côté serveur (SSR) de façon très granulaire — par exemple en désactivant le SSR (ssr = false) sur les cartes interactives lourdes comme Leaflet —, tout en offrant une courbe d'apprentissage douce grâce à sa proximité avec les standards HTML/CSS/JS."
+    },
+    {
+      "idx": 112,
+      "style": "Normal",
+      "text": "3. Framework Back-End"
+    },
+    {
+      "idx": 113,
+      "style": "Normal",
+      "text": "Sur la couche serveur, l'application doit orchestrer des tâches d'ingestion météorologique, traiter des séries temporelles complexes et exécuter un moteur de règles en temps réel. Si des solutions comme Spring Boot (Java) apportent un typage statique rigoureux, leur empreinte mémoire au repos (300 à 600 Mo de RAM) et leur verbosité s'avèrent disproportionnées pour des micro-instances cloud optimisées. À l'opposé, Express.js (Node.js) offre une excellente gestion de la concurrence non-bloquante, mais manque cruellement d'outils natifs pour le calcul scientifique et vectoriel. Enfin, bien que Django (DRF) bénéficie de l'écosystème Python, sa structure historiquement synchrone (WSGI) et la verbosité de ses sérialiseurs complexifient la gestion d'I/O hautement concurrentes."
+    },
+    {
+      "idx": 114,
+      "style": "Normal",
+      "text": "FastAPI s'est imposé comme le choix optimal en combinant la vitesse d'exécution des architectures asynchrones modernes avec la puissance de l'écosystème scientifique Python. Construit sur le protocole ASGI (uvicorn/uvloop), il gère efficacement des milliers de requêtes simultanées avec une empreinte mémoire minimale (50 à 80 Mo de RAM au repos). L'intégration native du moteur Pydantic v2 (écrit en Rust) assure une validation stricte et automatique des données entrantes à l'exécution dès la signature des fonctions. Surtout, FastAPI permet une interopérabilité directe et sans friction avec les bibliothèques de référence comme Pandas, NumPy et les clients binaires d'Open-Meteo, tout en générant automatiquement la documentation OpenAPI 3.0 (Swagger UI / ReDoc) à mesure du développement."
+    },
+    {
+      "idx": 115,
+      "style": "Normal",
+      "text": "4. Persistance des Données : MongoDB Atlas & Cache SQLite vs PostgreSQL"
+    },
+    {
+      "idx": 116,
+      "style": "Normal",
+      "text": "La stratégie de stockage représente l'une des évolutions de conception les plus significatives du projet. L’analyse approfondie de la dynamique des flux de données a conduit à une architecture hybride beaucoup plus efficiente, combinant MongoDB Atlas (NoSQL) pour la persistance documentaire des utilisateurs et un cache local SQLite pour les prévisions météorologiques."
+    },
+    {
+      "idx": 117,
+      "style": "Normal",
+      "text": "5. API REST, Protocoles et Formats d'Échange"
+    },
+    {
+      "idx": 118,
+      "style": "Normal",
+      "text": "La communication inter-composants s'appuie sur le standard architectural REST (Representational State Transfer) [10]. Les principes directeurs suivants ont été appliqués avec rigueur :"
+    },
+    {
+      "idx": 119,
+      "style": "List Bullet",
+      "text": "Adressage canonique des ressources : Chaque entité du domaine est désignée par un chemin d'URI explicite (/user pour les comptes, /token pour la session, /{location} pour les données spécifiques au territoire sélectionné )."
+    },
+    {
+      "idx": 120,
+      "style": "List Bullet",
+      "text": "Sémantique HTTP standard : Usage sémantique strict des méthodes HTTP : GET pour la consultation de données sans effet de bord, POST pour la création de ressources utilisateur ou la négociation de jetons d’authentification."
+    },
+    {
+      "idx": 121,
+      "style": "List Bullet",
+      "text": "Codes d'état HTTP univoques : Transmission de codes d'état normalisés guidant immédiatement le client : 200 (Succès), 400 (Requête invalide / mot de passe erroné), 401 (Non authentifié ou jeton expiré), 403 (Accès interdit), 404 (Localité inconnue) et 500 (Erreur interne)."
+    },
+    {
+      "idx": 122,
+      "style": "List Bullet",
+      "text": "Dualité des formats (JSON et FlatBuffers) : Les échanges entre le backend et le frontend SvelteKit s'opèrent au format standard JSON (JavaScript Object Notation), tandis que les échanges en amont avec les serveurs d'Open-Meteo exploitent le format binaire vectorisé FlatBuffers, qui élimine le surcoût de parsing textuel et autorise une vitesse de lecture jusqu'à 10 fois supérieure."
+    },
+    {
+      "idx": 123,
+      "style": "Normal",
+      "text": "6. Architecture de Sécurité et d'Authentification Avancée"
+    },
+    {
+      "idx": 124,
+      "style": "Normal",
+      "text": "Le choix stratégique d'implémenter une infrastructure d'authentification robuste de qualité  a été adopté :"
+    },
+    {
+      "idx": 125,
+      "style": "Normal",
+      "text": "6.1 Hachage Cryptographique des Mots de Passe via Argon2id"
+    },
+    {
+      "idx": 126,
+      "style": "Normal",
+      "text": "Les mots de passe des utilisateurs ne sont jamais stockés en clair. Ils sont protégés au moyen de l'algorithme Argon2id (version v=19). Contrairement aux algorithmes classiques (MD5, SHA-1, SHA-256 purs), Argon2id est spécifiquement conçu pour résister aux attaques massives par force brute exécutées sur des circuits ASIC dédiés ou des fermes de GPU. Il impose un coût mémoire incompressible (m = 65 536 Ko, soit 64 Mo de RAM par opération de hachage), combiné à 3 itérations temporelles (t = 3) et 4 voies de parallélisme (p = 4)."
+    },
+    {
+      "idx": 127,
+      "style": "Normal",
+      "text": "6.2 Neutralisation des Attaques Temporelles (Side-Channel Timing Attacks)"
+    },
+    {
+      "idx": 128,
+      "style": "Normal",
+      "text": "Une faille classique des systèmes d'authentification réside dans la vulnérabilité d'énumération par chronométrage réseau : si un identifiant saisi n'existe pas en base et que le serveur renvoie immédiatement une erreur sans exécuter l'algorithme de hachage, le temps de réponse (ex. 2 ms) est radicalement inférieur à celui d'une vérification de mot de passe erroné sur un compte existant (ex. 120 ms). Un attaquant peut ainsi cartographier l'ensemble des adresses emails enregistrées en mesurant la latence des réponses [12]."
+    },
+    {
+      "idx": 129,
+      "style": "Normal",
+      "text": "Pour parer cette vulnérabilité, le module app/core/security.py met en œuvre une défense en profondeur via un hachage factice de compensation (DUMMY_HASH) :"
+    },
+    {
+      "idx": 130,
+      "style": "Normal",
+      "text": "Extrait : app/core/security.py — Protection contre l'énumération par canal auxiliaire"
+    },
+    {
+      "idx": 131,
+      "style": "Normal",
+      "text": "def authenticate_user(self, username: str, password: str):"
+    },
+    {
+      "idx": 132,
+      "style": "Normal",
+      "text": "# Génération d'un hash fictif valide pour absorber le calcul cryptographique"
+    },
+    {
+      "idx": 133,
+      "style": "Normal",
+      "text": "DUMMY_HASH = self.password_hash.hash(\"dummypassword\")"
+    },
+    {
+      "idx": 134,
+      "style": "Normal",
+      "text": "user = self.get_user(username)"
+    },
+    {
+      "idx": 135,
+      "style": "Normal",
+      "text": "if not user:"
+    },
+    {
+      "idx": 136,
+      "style": "Normal",
+      "text": "# L'utilisateur n'existe pas : on exécute TOUT DE MÊME la vérification complète"
+    },
+    {
+      "idx": 137,
+      "style": "Normal",
+      "text": "# afin d'égaliser strictement le temps d'exécution serveur (anti-timing attack)"
+    },
+    {
+      "idx": 138,
+      "style": "Normal",
+      "text": "self.verify_password(password, DUMMY_HASH)"
+    },
+    {
+      "idx": 139,
+      "style": "Normal",
+      "text": "return False"
+    },
+    {
+      "idx": 140,
+      "style": "Normal",
+      "text": "if not self.verify_password(password, user.hashed_password):"
+    },
+    {
+      "idx": 141,
+      "style": "Normal",
+      "text": "return False"
+    },
+    {
+      "idx": 142,
+      "style": "Normal",
+      "text": "return user"
+    },
+    {
+      "idx": 144,
+      "style": "Normal",
+      "text": "6.3 Jetons JSON Web Tokens (JWT) et Transport Sécurisé par Cookies HttpOnly"
+    },
+    {
+      "idx": 145,
+      "style": "Normal",
+      "text": "L'authentification est formalisée selon le standard OAuth2 Password Bearer. En cas de vérification positive des identifiants sur la route POST /token, le serveur délivre un jeton JWT signé avec l'algorithme cryptographique symétrique HMAC-SHA256 (HS256) adossé à une clé secrète robuste (SECRET_KEY). Le payload (informations) du jeton incorpore l'identifiant utilisateur ('sub': username) et sa date de péremption ('exp': timestamp UTC), fixée à 30 minutes (ACCESS_TOKEN_EXPIRE_MINUTES = 30) [13]."
+    },
+    {
+      "idx": 146,
+      "style": "Normal",
+      "text": "La persistance de cette session côté client fait l'objet d'un arbitrage sécuritaire fondamental : plutôt que de stocker le token dans le LocalStorage du navigateur (vulnérable aux attaques par injection de script XSS), SvelteKit encapsule le jeton au sein d'un cookie configuré avec les attributs HttpOnly (inaccessible à l'API JavaScript Document.cookie), SameSite=Strict (neutralisant les requêtes falsifiées inter-sites CSRF) et une durée de vie calquée sur le jeton."
+    },
+    {
+      "idx": 147,
+      "style": "Normal",
+      "text": "7. Responsive Design et Accessibilité Numérique (WCAG 2.1)"
+    },
+    {
+      "idx": 148,
+      "style": "Normal",
+      "text": "L'ergonomie d'un outil d'aide à la décision agricole utilisé sur le terrain requiert une attention aiguë aux conditions d'usage en extérieur (forte luminosité solaire, manipulation d'une seule main, écrans de faible diagonale). Le projet applique les directives internationales d'accessibilité aux contenus web WCAG 2.1 (Web Content Accessibility Guidelines) édictées par le W3C, visant le niveau de conformité AA [14] :"
+    },
+    {
+      "idx": 149,
+      "style": "List Bullet",
+      "text": "Grille réactive fluide et adaptative : L'interface est structurée au moyen de la librarie moderne Tailwind CSS v4. La grille d'affichage applique la méthodologie Mobile-First : agencement sur 1 colonne par défaut (grid-cols-1), basculant de manière fluide à 2 colonnes sur tablette (md:grid-cols-2) et 4 colonnes sur station de travail (lg:grid-cols-4)."
+    },
+    {
+      "idx": 150,
+      "style": "List Bullet",
+      "text": "Contraste visuel et lisibilité extérieure : Le thème sombre moderne (fond Slate-950 #020617, cartes Slate-900 #0F172A) est associé à des typographies d'un blanc pur ou gris très clair (Slate-100 / Slate-200), garantissant un ratio de contraste photométrique supérieur à 7:1, surpassant largement le seuil minimal de 4.5:1 exigé par la norme WCAG 2.1 AA pour une lisibilité parfaite en plein soleil."
+    },
+    {
+      "idx": 151,
+      "style": "List Bullet",
+      "text": "Dimensions des cibles tactiles : Les boutons interactifs, onglets de sélection et marqueurs cartographiques respectent une surface tactile minimale de 44 × 44 pixels recommandée pour éviter les erreurs de manipulation tactile sur terminal mobile."
+    },
+    {
+      "idx": 152,
+      "style": "List Bullet",
+      "text": "Accessibilité sémantique et navigation au clavier : La fenêtre modale d'inspection des mesures intègre les attributs d'accessibilité WAI-ARIA formels (role='dialog', aria-modal='true', aria-labelledby='modal-title'). La navigation au clavier est totalement prise en charge, avec fermeture instantanée de la boîte de dialogue par pression de la touche Échap (Escape) interceptée au niveau de la fenêtre globale."
+    },
+    {
+      "idx": 153,
+      "style": "Normal",
+      "text": "8. Synthèse de l'État de l'Art et Choix Retenus"
+    },
+    {
+      "idx": 154,
+      "style": "Normal",
+      "text": "L'étude théorique et comparative valide avec force la cohérence technologique de la solution AgroMétéo Burundi. En conjuguant la puissance asynchrone de FastAPI, l'agilité de MongoDB Atlas, la réactivité sans DOM virtuel de Svelte 5 / SvelteKit 3 et une sécurité cryptographique (Argon2id / JWT), le système se dote d'une infrastructure moderne, légère et pérenne, parfaitement taillée pour  la surveillance agro-météorologique en contexte burundais."
+    },
+    {
+      "idx": 162,
+      "style": "Normal",
+      "text": "CHAPITRE III — CONCEPTION DE LA SOLUTION CIBLE"
+    },
+    {
+      "idx": 163,
+      "style": "Normal",
+      "text": "1. Spécification des Exigences Fonctionnelles (EF-01 à EF-20)"
+    },
+    {
+      "idx": 164,
+      "style": "Normal",
+      "text": "La phase de conception débute par la formalisation des besoins en spécifications fonctionnelles numérotées et hiérarchisées selon la méthode de priorisation MoSCoW (Must have, Should have, Could have, Won't have) [15]. Chaque exigence est confrontée à son statut d'implémentation effectif dans la base de code :"
+    },
+    {
+      "idx": 165,
+      "style": "Normal",
+      "text": "Tableau 3.1 — Spécification formelle des exigences fonctionnelles (EF-01 à EF-20)"
+    },
+    {
+      "idx": 167,
+      "style": "Normal",
+      "text": "2. Spécification des Exigences Non-Fonctionnelles (ENF-01 à ENF-10)"
+    },
+    {
+      "idx": 168,
+      "style": "Normal",
+      "text": "Les exigences non fonctionnelles établissent les critères qualitatifs de performance, robustesse, sécurité et ergonomie indispensables à l'acceptabilité opérationnelle du système :"
+    },
+    {
+      "idx": 169,
+      "style": "Normal",
+      "text": "Tableau 3.2 — Spécification formelle des exigences non fonctionnelles (ENF-01 à ENF-10)"
+    },
+    {
+      "idx": 171,
+      "style": "Normal",
+      "text": "3. Architecture Applicative Globale et Séparation BFF"
+    },
+    {
+      "idx": 172,
+      "style": "Normal",
+      "text": "La solution cible est organisée selon une architecture en couches découpée en trois tiers fonctionnels distincts, articulée autour du patron Backend-For-Frontend (BFF) :"
+    },
+    {
+      "idx": 176,
+      "style": "Normal",
+      "text": "Figure 3.1 — Architecture logicielle globale en couches et interconnexions de données"
+    },
+    {
+      "idx": 177,
+      "style": "Normal",
+      "text": "4. Modélisation UML Complète du Système"
+    },
+    {
+      "idx": 178,
+      "style": "Normal",
+      "text": "La modélisation de la solution cible est formalisée conformément aux standards de l'Unified Modeling Language (UML 2.5) [16]. Elle couvre les vues fonctionnelle, statique, dynamique et d'implémentation physique."
+    },
+    {
+      "idx": 179,
+      "style": "Normal",
+      "text": "4.1 Diagramme de Cas d'Utilisation (Use Case Diagram)"
+    },
+    {
+      "idx": 180,
+      "style": "Normal",
+      "text": "Le diagramme de cas d'utilisation capture les interactions entre les acteurs externes (l'Encadreur Agricole / Moniteur DPAE, le Gestionnaire de Coopérative, et le Système Météorologique Tiers) et les fonctionnalités du système :"
+    },
+    {
+      "idx": 182,
+      "style": "Normal",
+      "text": "Figure 3.2 — Diagramme de cas d'utilisation du système AgroMétéo Burundi"
+    },
+    {
+      "idx": 183,
+      "style": "Normal",
+      "text": "4.2 Diagramme de Classes Métier (Class Diagram)"
+    },
+    {
+      "idx": 184,
+      "style": "Normal",
+      "text": "Le diagramme de classes illustre les structures de données, les schémas de transfert Pydantic et la séparation entre les modèles de persistance et les composants de logique pure :"
+    },
+    {
+      "idx": 186,
+      "style": "Normal",
+      "text": "Figure 3.3 — Diagramme de classes métier du backend AgroMétéo Burundi"
+    },
+    {
+      "idx": 187,
+      "style": "Normal",
+      "text": "Tableau 3.3 — Description des classes et modules logiciels métier"
+    },
+    {
+      "idx": 189,
+      "style": "Normal",
+      "text": "4.3 Diagramme de Composants (Component Diagram)"
+    },
+    {
+      "idx": 190,
+      "style": "Normal",
+      "text": "Le diagramme de composants matérialise les frontières physiques et modulaires entre les packages logiciels :"
+    },
+    {
+      "idx": 192,
+      "style": "Normal",
+      "text": "Figure 3.4 — Diagramme de composants logiciels du système"
+    },
+    {
+      "idx": 193,
+      "style": "Normal",
+      "text": "4.4 Diagrammes de Séquence (Sequence Diagrams)"
+    },
+    {
+      "idx": 194,
+      "style": "Normal",
+      "text": "Les diagrammes de séquence détaillent la chronologie des messages échangés lors des deux cas d'usage majeurs du système."
+    },
+    {
+      "idx": 195,
+      "style": "Normal",
+      "text": "Séquence 1 : Authentification Sécurisée et Émission du Cookie de Session"
+    },
+    {
+      "idx": 197,
+      "style": "Normal",
+      "text": "Figure 3.5 — Diagramme de séquence de l'authentification OAuth2 / JWT"
+    },
+    {
+      "idx": 198,
+      "style": "Normal",
+      "text": "Séquence 2 : Consultation d'un Bulletin Régional et Évaluation du Moteur Pur"
+    },
+    {
+      "idx": 200,
+      "style": "Normal",
+      "text": "Figure 3.6 — Diagramme de séquence de la consultation d'un bulletin agro-météorologique"
+    },
+    {
+      "idx": 201,
+      "style": "Normal",
+      "text": "5. Modélisation des Données et Schémas Physiques"
+    },
+    {
+      "idx": 202,
+      "style": "Normal",
+      "text": "La persistance des données au sein du système repose sur une stricte séparation entre les données d'identité et les séries temporelles transitoires :"
+    },
+    {
+      "idx": 203,
+      "style": "Normal",
+      "text": "5.1 Schéma de la Collection MongoDB 'users'"
+    },
+    {
+      "idx": 204,
+      "style": "Normal",
+      "text": "Les comptes utilisateurs sont stockés sous forme de documents BSON structurés dans la base 'weather-app' :"
+    },
+    {
+      "idx": 205,
+      "style": "Normal",
+      "text": "Extrait : Schéma documentaire BSON — Collection MongoDB 'users'"
+    },
+    {
+      "idx": 207,
+      "style": "Normal",
+      "text": "5.2 Schéma de la Table de Cache SQLite (.cache.sqlite)"
+    },
+    {
+      "idx": 208,
+      "style": "Normal",
+      "text": "La bibliothèque `requests-cache` gère un fichier SQLite local `.cache.sqlite` contenant deux tables internes : `responses` (stockant la charge utile binaire compressée de la réponse HTTP, les en-têtes et la date d'expiration) et `redirects` (résolution des redirections d'URL). Le TTL configuré à 3 600 secondes garantit que toute requête identique émise au cours de l'heure est servie directement depuis le disque local en moins de 5 millisecondes."
+    },
+    {
+      "idx": 211,
+      "style": "Normal",
+      "text": "6. Moteur de Règles Métier et Formalisation Algorithmique"
+    },
+    {
+      "idx": 212,
+      "style": "Normal",
+      "text": "Le cœur décisionnel du projet est implanté de façon pure dans `app/services/measures.py` et `app/services/advice.py`. Il traduit avec rigueur les seuils de vigilance officiels de l'IGEBU [17] et les directives culturales de l'ISABU [18]."
+    },
+    {
+      "idx": 213,
+      "style": "Normal",
+      "text": "6.1 Formalisation Mathématique des Règles Métier"
+    },
+    {
+      "idx": 214,
+      "style": "Normal (Web)",
+      "text": "1. Règle de Pluie Critique sur 24 heures (Toutes cultures, avec conseil renforcé pour le Maïs) :"
+    },
+    {
+      "idx": 215,
+      "style": "Normal (Web)",
+      "text": "Soit P_24h le cumul horaire des précipitations prévu sur l'intervalle temporel ouvert à gauche (t0, t0 + 24h] :\n \t\t\tP_24h = Somme de i=1 à 24 de p(t0 + i heures)"
+    },
+    {
+      "idx": 216,
+      "style": "Normal (Web)",
+      "text": "La condition de déclenchement s'énonce :\n \tP_24h >= S_24h où S_24h = 50.0 mm si Zone = Plaine, et S_24h = 100.0 mm si Zone = Montagne."
+    },
+    {
+      "idx": 217,
+      "style": "Normal (Web)",
+      "text": "Directive pour le Maïs : « Si vous faites sécher du maïs en plein air, prévoyez de le mettre à l'abri ou de le couvrir avant les pluies annoncées. Vérifiez les fossés et les accès autour des aires de séchage. »"
+    },
+    {
+      "idx": 218,
+      "style": "Normal (Web)",
+      "text": "2. Règle de Pluie Prolongée sur 72 heures (Haricot, Manioc, Patate douce, Pomme de terre) :"
+    },
+    {
+      "idx": 219,
+      "style": "Normal (Web)",
+      "text": "Soit P_72h = Somme de i=1 à 72 de p(t0 + i heures).\n La condition de déclenchement s'énonce :"
+    },
+    {
+      "idx": 220,
+      "style": "Normal (Web)",
+      "text": "P_72h >= S_72h où S_72h = 60.0 mm si Plaine, et S_72h = 90.0 mm si Montagne."
+    },
+    {
+      "idx": 221,
+      "style": "Normal (Web)",
+      "text": "Directive opérationnelle : « Après des pluies prolongées, vérifiez l'apparition de rigoles ou de ravinements et l'évacuation de l'eau autour des parcelles. » (Ajout spécifique pour la patate douce : « Vérifiez aussi l'état des buttes. »)"
+    },
+    {
+      "idx": 222,
+      "style": "Normal (Web)",
+      "text": "3. Règle de Saturation Hydrique des Sols sur les 7 Jours Écoulés :\n Soit P_7j_passes = Somme de j=1 à 168 de p(t0 - j heures).\n Condition de déclenchement :"
+    },
+    {
+      "idx": 223,
+      "style": "Normal (Web)",
+      "text": "P_7j_passes >= 50.0 mm."
+    },
+    {
+      "idx": 224,
+      "style": "Normal (Web)",
+      "text": "Rôle agronomique : avertir que la réserve utile du sol est saturée et que toute nouvelle pluie entraînera une asphyxie racinaire."
+    },
+    {
+      "idx": 226,
+      "style": "Normal (Web)",
+      "text": "4. Règle de Vent Violent et Rafales (Bananier et Maïs) :\n Soit V_rafales = Max de i=1 à 24 de vent_rafale(t0 + i heures)."
+    },
+    {
+      "idx": 227,
+      "style": "Normal (Web)",
+      "text": "Condition de déclenchement :"
+    },
+    {
+      "idx": 228,
+      "style": "Normal (Web)",
+      "text": "V_rafales >= 40.0 km/h."
+    },
+    {
+      "idx": 229,
+      "style": "Normal (Web)",
+      "text": "Directive pour le Bananier : « Vérifiez les plants exposés au vent. Si des brise-vent existent, contrôlez leur état ; les régimes proches de la maturité peuvent être plus vulnérables à la chute. »"
+    },
+    {
+      "idx": 231,
+      "style": "Normal (Web)",
+      "text": "5. Règle de Crue Hydrologique et Débit Anormal pour le Riz de Bas-fond :\n Soit Q_prevu le débit maximal prévu sur 7 jours via GloFAS, et Q_ref_p75 le 75e percentile des débits des 31 derniers jours.\n Condition de déclenchement :"
+    },
+    {
+      "idx": 232,
+      "style": "Normal (Web)",
+      "text": "Q_prevu > Q_ref_p75."
+    },
+    {
+      "idx": 233,
+      "style": "Normal (Web)",
+      "text": "Directive opérationnelle : « Le débit prévu est inhabituel pour ce point à cette période. Vérifiez les diguettes, les canaux et les accès du bas-fond. Une pluie normale n'est pas un problème pour le riz, mais un débit inhabituel justifie une vérification locale. »"
+    },
+    {
+      "idx": 234,
+      "style": "Normal (Web)",
+      "text": "6. Règle de Période Sèche Prolongée (Toutes cultures) :\n Soit N_jours_secs le nombre de jours consécutifs où la pluie sur 24h est inférieure à 2.0 mm.\n Condition de déclenchement :"
+    },
+    {
+      "idx": 235,
+      "style": "Normal (Web)",
+      "text": "N_jours_secs >= 5 jours."
+    },
+    {
+      "idx": 236,
+      "style": "Normal (Web)",
+      "text": "Directive : « Période sèche annoncée : surveillez l'état des cultures et vérifiez localement la disponibilité en eau. »"
+    },
+    {
+      "idx": 238,
+      "style": "Normal",
+      "text": "6.2 Matrice ISABU des Cultures Prévalentes par Région"
+    },
+    {
+      "idx": 239,
+      "style": "Normal",
+      "text": "L'application adapte dynamiquement les avis en fonction du catalogue des cultures dominantes de la zone :"
+    },
+    {
+      "idx": 240,
+      "style": "List Bullet",
+      "text": "• Bujumbura Mairie : riz, maïs, manioc, bananier."
+    },
+    {
+      "idx": 241,
+      "style": "List Bullet",
+      "text": "• Bujumbura Rural (Imbo) : riz, maïs, manioc, bananier."
+    },
+    {
+      "idx": 242,
+      "style": "List Bullet",
+      "text": "• Bujumbura Rural (Mumirwa) : bananier, maïs, haricot, manioc, pomme de terre."
+    },
+    {
+      "idx": 243,
+      "style": "List Bullet",
+      "text": "• Gitega : maïs, haricot, bananier, riz, patate douce, pomme de terre."
+    },
+    {
+      "idx": 244,
+      "style": "List Bullet",
+      "text": "• Karusi : maïs, haricot, bananier, manioc, patate douce."
+    },
+    {
+      "idx": 245,
+      "style": "List Bullet",
+      "text": "• Rutana : riz, maïs, haricot, manioc, bananier."
+    },
+    {
+      "idx": 246,
+      "style": "Normal",
+      "text": "7. Planification Agile Scrum sur Deux Semaines (W1–W2)"
+    },
+    {
+      "idx": 247,
+      "style": "Normal",
+      "text": "Le projet a été exécuté selon la méthode Agile Scrum condensée sur un cycle de dix jours ouvrés (deux semaines) [19] :"
+    },
+    {
+      "idx": 248,
+      "style": "Normal",
+      "text": "Tableau 3.4 — Planification Scrum et exécution des sprints sur 10 jours ouvrés"
+    },
+    {
+      "idx": 250,
+      "style": "Normal",
+      "text": "8. Synthèse de la Conception"
+    },
+    {
+      "idx": 251,
+      "style": "Normal",
+      "text": "La conception de la solution AgroMétéo Burundi aboutit à une architecture modulaire. Grâce à des exigences clairement énumérées (EF et ENF), des schémas de données légers et un moteur de règles fonctionnel, le système dispose d'une assise solide pour la réalisation technique détaillée au chapitre suivant."
+    },
+    {
+      "idx": 260,
+      "style": "Normal",
+      "text": "CHAPITRE IV — IMPLÉMENTATION ET RÉALISATION"
+    },
+    {
+      "idx": 261,
+      "style": "Normal",
+      "text": "1. Environnement de Développement et Outillage Technique"
+    },
+    {
+      "idx": 262,
+      "style": "Normal",
+      "text": "L’implémentation du projet AgroMétéo Burundi s'est appuyée sur un environnement technique moderne, hautement performant et rigoureusement configuré. L'équipe a tiré parti des avancées les plus récentes des écosystèmes Python et JavaScript pour garantir une rapidité de développement optimale et une maintenabilité pérenne :"
+    },
+    {
+      "idx": 263,
+      "style": "Normal",
+      "text": "Tableau 4.1 — Matrice de l'environnement technologique et outillage de développement"
+    },
+    {
+      "idx": 265,
+      "style": "Normal",
+      "text": "2. Implémentation du Backend `weather-backend`"
+    },
+    {
+      "idx": 266,
+      "style": "Normal",
+      "text": "Le répertoire `weather-backend` matérialise l'API REST asynchrone et le moteur décisionnel pur. L'arborescence du projet adopte une séparation stricte des responsabilités :"
+    },
+    {
+      "idx": 269,
+      "style": "Normal",
+      "text": "Figure 4.1 — Structure modulaire de la base de code du backend FastAPI"
+    },
+    {
+      "idx": 270,
+      "style": "Normal",
+      "text": "2.1 Implémentation des Contrôleurs et Routes FastAPI"
+    },
+    {
+      "idx": 271,
+      "style": "Normal",
+      "text": "Le point d'entrée `app/main.py` instancie l'application ASGI FastAPI et inclut les trois routeurs sans préfixe superflu :"
+    },
+    {
+      "idx": 272,
+      "style": "List Bullet",
+      "text": "Route POST /token (app/routes/token.py) : Reçoit les requêtes au format standard application/x-www-form-urlencoded via OAuth2PasswordRequestForm. Appelle security.authenticate_user(). En cas de succès, génère un jeton JWT valide 30 minutes contenant l'identifiant ('sub': username) et renvoie le schéma JSON { 'access_token': ..., 'token_type': 'bearer' }. En cas d'échec, renvoie une exception HTTP 401 Unauthorized après avoir exécuté le hachage fictif de compensation anti-timing."
+    },
+    {
+      "idx": 273,
+      "style": "List Bullet",
+      "text": "Route POST /user (app/routes/user.py) : Reçoit le schéma NewUser (nom, email, mot de passe). Hache le mot de passe en Argon2id et insère le document BSON dans la collection 'users' de MongoDB Atlas. Renvoie le schéma public User sans exposer le mot de passe haché."
+    },
+    {
+      "idx": 274,
+      "style": "List Bullet",
+      "text": "Route GET /{location} (app/routes/weather.py) : Exige obligatoirement la dépendance de sécurité token: Annotated[User, Depends(security.get_current_user)]. Valide l'identifiant territorial via l'enum Location. Récupère les coordonnées géographiques associées, lance les requêtes asynchrones Open-Meteo et GloFAS, extrait les cumuls temporels via measures.py, évalue les conseils agricoles via advice.py et renvoie un payload JSON consolidé contenant les prévisions horaires, les relevés de crues et le tableau des conseils."
+    },
+    {
+      "idx": 275,
+      "style": "Normal",
+      "text": "2.2 Client Réseau Résilient et Mise en Cache SQLite (app/services/weather.py)"
+    },
+    {
+      "idx": 276,
+      "style": "Normal",
+      "text": "La communication avec les serveurs d'Open-Meteo est blindée contre les aléas de connectivité grâce à la combinaison de `requests-cache` et `retry-requests` :"
+    },
+    {
+      "idx": 277,
+      "style": "Normal",
+      "text": "Extrait : app/services/weather.py — Client HTTP résilient avec cache local SQLite"
+    },
+    {
+      "idx": 278,
+      "style": "Normal",
+      "text": "class OpenMeteoWeatherService:"
+    },
+    {
+      "idx": 279,
+      "style": "Normal",
+      "text": "def __init__(self):"
+    },
+    {
+      "idx": 280,
+      "style": "Normal",
+      "text": "# Configuration d'un cache local persistant SQLite avec expiration à 1 heure"
+    },
+    {
+      "idx": 281,
+      "style": "Normal",
+      "text": "self.cache_session = requests_cache.CachedSession('.cache', expire_after=3600)"
+    },
+    {
+      "idx": 282,
+      "style": "Normal",
+      "text": "# Politique de relance : 5 tentatives automatiques avec facteur de recul exponentiel"
+    },
+    {
+      "idx": 283,
+      "style": "Normal",
+      "text": "self.retry_session = retry(self.cache_session, retries=5, backoff_factor=0.2)"
+    },
+    {
+      "idx": 284,
+      "style": "Normal",
+      "text": "# Client FlatBuffers binaire ultra-rapide"
+    },
+    {
+      "idx": 285,
+      "style": "Normal",
+      "text": "self.openmeteo = openmeteo_requests.Client(session=self.retry_session)"
+    },
+    {
+      "idx": 287,
+      "style": "Normal",
+      "text": "2.3 Moteur d'Agrégation Temporelle (app/services/measures.py)"
+    },
+    {
+      "idx": 288,
+      "style": "Normal",
+      "text": "Le module `measures.py` résout la complexité de l'alignement temporel des séries horaires météorologiques. Il respecte la convention physique d'Open-Meteo où la valeur enregistrée à l'heure T correspond au cumul tombé sur l'intervalle écoulé (T - 1h, T]. Le calcul des cumuls glissants s'effectue sur des fenêtres semi-ouvertes :"
+    },
+    {
+      "idx": 289,
+      "style": "List Bullet",
+      "text": "• pluie_24h : somme des 24 pas de temps horaires sur l'intervalle (t0, t0 + 24h]."
+    },
+    {
+      "idx": 290,
+      "style": "List Bullet",
+      "text": "• pluie_72h : somme des 72 pas de temps horaires sur l'intervalle (t0, t0 + 72h]."
+    },
+    {
+      "idx": 291,
+      "style": "List Bullet",
+      "text": "• pluie_7j_passes : somme des 168 pas de temps passés sur (t0 - 168h, t0]."
+    },
+    {
+      "idx": 292,
+      "style": "List Bullet",
+      "text": "• jours_secs : décompte des blocs successifs de 24h dont le cumul pluviométrique est strictement inférieur à 2,0 mm."
+    },
+    {
+      "idx": 293,
+      "style": "List Bullet",
+      "text": "• rafales_kmh : valeur maximale des rafales de vent anticipées sur les 24 prochaines heures."
+    },
+    {
+      "idx": 294,
+      "style": "List Bullet",
+      "text": "• Garde-fou d'intégrité : si la fenêtre temporelle est incomplète ou contient une valeur manquante (NaN / None), la fonction refuse d'interpoler et renvoie None, neutralisant tout risque de faux avis."
+    },
+    {
+      "idx": 295,
+      "style": "Normal",
+      "text": "2.4 Moteur Décisionnel et Éthique des Messages (app/services/advice.py)"
+    },
+    {
+      "idx": 296,
+      "style": "Normal",
+      "text": "Le fichier `advice.py` implémente les règles de décision agricole sans aucun effet de bord. Voici un extrait significatif illustrant l'application des règles pour la culture du riz et les garanties déontologiques :"
+    },
+    {
+      "idx": 297,
+      "style": "Normal",
+      "text": "Extrait : app/services/advice.py — Logique métier pour la riziculture en bas-fond"
+    },
+    {
+      "idx": 298,
+      "style": "Normal",
+      "text": "if culture == \"riz\":"
+    },
+    {
+      "idx": 299,
+      "style": "Normal",
+      "text": "# Surveillance des débits anormaux en bas-fond rizicole"
+    },
+    {
+      "idx": 300,
+      "style": "Normal",
+      "text": "if debit_prevu is not None and debit_ref is not None:"
+    },
+    {
+      "idx": 301,
+      "style": "Normal",
+      "text": "if debit_prevu > debit_ref:"
+    },
+    {
+      "idx": 302,
+      "style": "Normal",
+      "text": "regles.append(\"debit_inhabituel\")"
+    },
+    {
+      "idx": 303,
+      "style": "Normal",
+      "text": "actions.append("
+    },
+    {
+      "idx": 304,
+      "style": "Normal",
+      "text": "\"Le débit prévu est inhabituel pour ce point à cette période. \""
+    },
+    {
+      "idx": 305,
+      "style": "Normal",
+      "text": "\"Vérifiez les diguettes, les canaux et les accès du bas-fond. \""
+    },
+    {
+      "idx": 306,
+      "style": "Normal",
+      "text": "\"Une pluie normale n'est pas un problème pour le riz, mais un débit \""
+    },
+    {
+      "idx": 307,
+      "style": "Normal",
+      "text": "\"inhabituel justifie une vérification locale.\""
+    },
+    {
+      "idx": 308,
+      "style": "Normal",
+      "text": ")"
+    },
+    {
+      "idx": 309,
+      "style": "Normal",
+      "text": "# Surveillance de l'engorgement sans crue majeure"
+    },
+    {
+      "idx": 310,
+      "style": "Normal",
+      "text": "if \"debit_inhabituel\" not in regles and pluie_72h is not None and pluie_72h >= seuil_72h:"
+    },
+    {
+      "idx": 311,
+      "style": "Normal",
+      "text": "regles.append(\"pluie_72h_riz\")"
+    },
+    {
+      "idx": 312,
+      "style": "Normal",
+      "text": "actions.append("
+    },
+    {
+      "idx": 313,
+      "style": "Normal",
+      "text": "\"Surveillez l'accumulation d'eau dans les points bas du bas-fond \""
+    },
+    {
+      "idx": 314,
+      "style": "Normal",
+      "text": "\"et vérifiez que les évacuations ne sont pas obstruées.\""
+    },
+    {
+      "idx": 315,
+      "style": "Normal",
+      "text": ")"
+    },
+    {
+      "idx": 316,
+      "style": "Normal",
+      "text": "3. Implémentation du Frontend SvelteKit `weather-app`"
+    },
+    {
+      "idx": 317,
+      "style": "Normal",
+      "text": "L'application client  exploite la dernière génération du framework web Svelte (Svelte 5) en activant systématiquement les Runes. L'interface se caractérise par une réactivité instantanée et une ergonomie raffinée :"
+    },
+    {
+      "idx": 319,
+      "style": "Normal",
+      "text": "Figure 4.2 — Structure modulaire du frontend SvelteKit"
+    },
+    {
+      "idx": 320,
+      "style": "Normal",
+      "text": "3.1 Composant Cartographique Interactif (src/lib/components/Leaflet.svelte)"
+    },
+    {
+      "idx": 321,
+      "style": "Normal",
+      "text": "La carte interactive s'appuie sur le wrapper `sveaflet` enveloppant la bibliothèque Leaflet 1.9.4. Elle positionne six marqueurs géographiques précis matérialisant les cinq provinces et les deux sous-zones de Bujumbura Rural :"
+    },
+    {
+      "idx": 322,
+      "style": "List Bullet",
+      "text": "1. Gitega (lat: -3.42708, long: 29.92463) : Hautes terres centrales, capitale politique."
+    },
+    {
+      "idx": 323,
+      "style": "List Bullet",
+      "text": "2. Karusi (lat: -3.10139, long: 30.16278) : Centre-Est, bassin fluvial de la Ruvubu."
+    },
+    {
+      "idx": 324,
+      "style": "List Bullet",
+      "text": "3. Bujumbura Mairie (lat: -3.38193, long: 29.36142) : Plaine de l'Imbo et littoral du Tanganyika."
+    },
+    {
+      "idx": 325,
+      "style": "List Bullet",
+      "text": "4. Rutana (lat: -3.92790, long: 29.99200) : Sud-Est et dépression agricole du Kumoso."
+    },
+    {
+      "idx": 326,
+      "style": "List Bullet",
+      "text": "5. Bujumbura Rural - Imbo (lat: -3.45000, long: 29.32000) : Plaine côtière basse altitude (< 1 000 m)."
+    },
+    {
+      "idx": 327,
+      "style": "List Bullet",
+      "text": "6. Bujumbura Rural - Mumirwa (lat: -3.51220, long: 29.37150) : Contreforts escarpés (> 1 350 m)."
+    },
+    {
+      "idx": 328,
+      "style": "Normal",
+      "text": "Chaque marqueur ouvre une infobulle (popup) au clic affichant l'appellation de la station, son sous-titre agro-écologique et un bouton d'action fluide 'Voir météo & conseils →' naviguant vers la route dynamique `/region/[slug]`."
+    },
+    {
+      "idx": 329,
+      "style": "Normal",
+      "text": "3.2 Visualisation Vectorielle Temporelle (svelteplot) et Filtrage des Avis"
+    },
+    {
+      "idx": 330,
+      "style": "Normal",
+      "text": "Sur la page de détail `/region/[slug]`, le composant exploite `svelteplot` pour restituer les séries temporelles de prévisions horaires sur 7 jours. L'utilisateur bascule entre 4 grandeurs physiques :"
+    },
+    {
+      "idx": 331,
+      "style": "List Bullet",
+      "text": "• Température (°C) : courbe ambrée (#f59e0b) avec zone ombrée semi-transparente."
+    },
+    {
+      "idx": 332,
+      "style": "List Bullet",
+      "text": "• Précipitations (mm) : courbe bleu ciel (#38bdf8) illustrant l'intensité des averses."
+    },
+    {
+      "idx": 333,
+      "style": "List Bullet",
+      "text": "• Probabilité de pluie (%) : courbe indigo (#818cf8) exprimant le niveau de certitude."
+    },
+    {
+      "idx": 334,
+      "style": "List Bullet",
+      "text": "• Vitesse du vent (km/h) : courbe verte émeraude (#34d399) avec surbrillance des rafales."
+    },
+    {
+      "idx": 335,
+      "style": "Normal",
+      "text": "Le survol du graphique déclenche un composant `<Pointer>` qui projette une mire en croix (`RuleX`, `RuleY`), un point de capture (`Dot`) et une infobulle textuelle indiquant la date et l'heure UTC exacte ainsi que la valeur mesurée. Sous les graphiques, les cartes d'avis agricoles sont filtrées en temps réel par culture et par niveau de sévérité sans aucun rechargement de page, illustrant la puissance de la Rune réactive `$derived`."
+    },
+    {
+      "idx": 336,
+      "style": "Normal",
+      "text": "3.3 Modale d'Inspection des Mesures et Limitations"
+    },
+    {
+      "idx": 337,
+      "style": "Normal",
+      "text": "Chaque carte de conseil comporte un bouton 'Mesures & limitations' ouvrant une boîte de dialogue modale. Cette fenêtre affiche des jauges de progression colorimétriques comparant la prévision aux seuils critiques (bleu < 75%, ambre entre 75% et 100%, rose vif ≥ 100%), garantissant une transparence absolue vis-à-vis des utilisateurs."
+    },
+    {
+      "idx": 338,
+      "style": "Normal",
+      "text": "4. Gestion de Version Git, Dépendances et Documentation"
+    },
+    {
+      "idx": 339,
+      "style": "Normal",
+      "text": "La gestion des dépendances est verrouillée de manière reproductible au bit près via `uv.lock` côté Python et `package-lock.json` côté Node.js. L'API backend est documentée interactivement via les interfaces auto-générées Swagger UI (`/docs`) et ReDoc (`/redoc`). Les dépôts Git (pour le frontend et pour le backend) ont été initialisés sur leurs branches principales master respectives avec un fichier .gitignore standard excluant les caches locaux, les fichiers d'environnement (.env) et les artefacts compilés."
+    },
+    {
+      "idx": 340,
+      "style": "Normal",
+      "text": "5. Synthèse de la Réalisation"
+    },
+    {
+      "idx": 341,
+      "style": "Normal",
+      "text": "L'implémentation logicielle d'AgroMétéo Burundi démontre une certaine maitrise des standards de développement actuels. En mariant la réactivité sans DOM virtuel de Svelte 5 aux performances asynchrones et à la rigueur de calcul de FastAPI, la plateforme offre un niveau opérationnel prêt pour l'évaluation expérimentale développée au Chapitre V."
+    },
+    {
+      "idx": 346,
+      "style": "Normal",
+      "text": "CHAPITRE V — TESTS, VALIDATION ET ÉVALUATION"
+    },
+    {
+      "idx": 347,
+      "style": "Normal",
+      "text": "1. Méthodologie d'Assurance Qualité et Stratégie de Test"
+    },
+    {
+      "idx": 348,
+      "style": "Normal",
+      "text": "L'assurance qualité logicielle du projet AgroMétéo Burundi a été articulée selon une démarche d'ingénierie inspirée de la pyramide des tests de Mike Cohn [20]. Compte tenu des contraintes temporelles d'un cycle de deux semaines, les efforts de test automatisé ont été concentrés prioritairement sur le socle algorithmique décisionnel (moteur pur sans état), complétés par des validations de compilation statique, de linting et des tests d'intégration d'API :"
+    },
+    {
+      "idx": 349,
+      "style": "List Bullet",
+      "text": "1. Tests Unitaires Purs (Backend) : Couverture systématique et automatisée de toutes les branches logiques de measures.py et advice.py via la suite pytest. Les tests s'exécutent de manière totalement découplée du réseau à l'aide de jeux de données synthétiques vectorisés."
+    },
+    {
+      "idx": 350,
+      "style": "List Bullet",
+      "text": "2. Tests d'Intégration d'API : Validation de la conformité des schémas Pydantic, de la génération des jetons JWT et du bon fonctionnement du cache SQLite lors des simulations d'interruption réseau."
+    },
+    {
+      "idx": 351,
+      "style": "List Bullet",
+      "text": "3. Tests de Compilation et Linting (Frontend) : Contrôle strict des règles de formatage et de typage via ESLint 10 et Prettier 3, suivi d'une compilation de production complète par Vite 8 validant l'absence de toute erreur de syntaxe ou d'importation manquante."
+    },
+    {
+      "idx": 352,
+      "style": "List Bullet",
+      "text": "4. Tests d'Interface et d'Utilisabilité : Vérification manuelle et instrumentée des parcours utilisateurs sur une variété de résolutions d'écran (smartphone, tablette, PC) et audit des contrastes et de l'accessibilité au clavier (normes WCAG 2.1 AA)."
+    },
+    {
+      "idx": 353,
+      "style": "Normal",
+      "text": "2. Revue Exhaustive des Tests Automatisés Backend (pytest)"
+    },
+    {
+      "idx": 354,
+      "style": "Normal",
+      "text": "L'exécution de la suite de tests automatisés via la commande `.venv\\Scripts\\pytest -v` atteste d'un taux de succès de 100 % sur l'intégralité des 31 tests unitaires en un temps d'exécution de 7,59 secondes :"
+    },
+    {
+      "idx": 355,
+      "style": "Normal",
+      "text": "Tableau 5.1 — Registre exhaustif des 31 tests unitaires validés sous pytest (100% succès)"
+    },
+    {
+      "idx": 357,
+      "style": "Normal",
+      "text": "3. Tests et Validation du Frontend SvelteKit"
+    },
+    {
+      "idx": 358,
+      "style": "Normal",
+      "text": "La validation de l'interface utilisateur s'est opérée en trois étapes complémentaires : l'analyse statique du code, le test de compilation de production et l'audit de performance des bundles générés :"
+    },
+    {
+      "idx": 359,
+      "style": "List Bullet",
+      "text": "1. Analyse Statique et Formatage : L'exécution de npm run lint a validé l'ensemble des fichiers JavaScript et composants Svelte au regard des configurations ESLint 10 et Prettier 3 sans aucune erreur de syntaxe ni d'anti-patron réactif."
+    },
+    {
+      "idx": 360,
+      "style": "List Bullet",
+      "text": "2. Test de Compilation de Production (Vite 8) : La commande npm run build (propulsée par Vite 8.3.0) s'est achevée avec un code de retour de zéro (exit code 0). Le compilateur a transformé avec succès 1 163 modules pour l'environnement client en 8,42 secondes et 443 modules pour le runtime serveur SSR en 12,50 secondes, attestant de l'intégrité de l'arbre des dépendances."
+    },
+    {
+      "idx": 361,
+      "style": "List Bullet",
+      "text": "3. Analyse du Poids des Artefacts de Production : L'optimisation des bundles générés confirme la remarquable compacité de l'application : le bundle racine du layout pèse 47,70 Ko (CSS : 8,19 Ko gzippé) ; la page d'accueil cartographique (Leaflet) pèse 168,09 Ko (53,54 Ko gzippé) ; la page de détail régional (Svelteplot) pèse 286,55 Ko (94,06 Ko gzippé). Ces métriques respectent l'exigence ENF-07 fixant un plafond de 250 Ko gzippé."
+    },
+    {
+      "idx": 362,
+      "style": "Normal",
+      "text": "4. Tests d'Interface, Compatibilité Responsive et Accessibilité (WCAG 2.1)"
+    },
+    {
+      "idx": 363,
+      "style": "Normal",
+      "text": "La compatibilité multi-appareils a été éprouvée sur émulateurs de résolutions représentatives du parc burundais :"
+    },
+    {
+      "idx": 364,
+      "style": "List Bullet",
+      "text": "Sur Smartphone (360 × 640 px et 412 × 915 px) : L'ensemble de l'interface se réorganise sur une seule colonne fluide. La hauteur de la carte Leaflet est ajustée à 540 px, les graphiques svelteplot s'adaptent à la largeur de l'écran avec tooltips tactiles au toucher et le menu de navigation propose des boutons tactiles largement espacés (≥ 44 px)."
+    },
+    {
+      "idx": 365,
+      "style": "List Bullet",
+      "text": "Sur Tablette (768 × 1024 px) : L'agencement bascule en grille à 2 colonnes permettant la consultation conjointe des indicateurs clés et des fiches d'avis."
+    },
+    {
+      "idx": 366,
+      "style": "List Bullet",
+      "text": "Sur Ordinateur de Bureau (1920 × 1080 px) : L'agencement en 4 colonnes met en valeur la carte interactive sur 3/4 de la largeur avec le panneau de sélection provincial sur 1/4."
+    },
+    {
+      "idx": 367,
+      "style": "Normal",
+      "text": "L'audit d'accessibilité atteste de la conformité au niveau AA du standard WCAG 2.1 : les contrastes textuels sur fond sombre dépassent 7:1, la modale d'inspection piège le focus et se ferme instantanément à la touche Échap, et tous les champs de formulaires possèdent des étiquettes associées (label for / id) [14]."
+    },
+    {
+      "idx": 368,
+      "style": "Normal",
+      "text": "5. Évaluation de l'Utilisabilité et des Performances"
+    },
+    {
+      "idx": 369,
+      "style": "Normal",
+      "text": "L'évaluation des temps de réponse a mis en évidence l'efficacité de l'architecture de mise en cache SQLite :"
+    },
+    {
+      "idx": 370,
+      "style": "List Bullet",
+      "text": "Performance avec Cache Actif (Cache HIT) : Lors d'une requête portant sur une zone dont les données sont en cache (validité de 3 600 secondes), le serveur FastAPI extrait les séries temporelles locales et évalue les conseils en moins de 15 millisecondes. Le rendu complet de la page SvelteKit s'effectue en moins de 80 millisecondes."
+    },
+    {
+      "idx": 371,
+      "style": "List Bullet",
+      "text": "Performance lors du Rafraîchissement Externe (Cache MISS) : Lors de la première interrogation nécessitant la récupération des flux distants auprès d'Open-Meteo et de GloFAS, le temps de réponse total s'établit entre 1,1 et 1,4 seconde, ce qui demeure très inférieur au seuil de tolérance de 2 secondes."
+    },
+    {
+      "idx": 375,
+      "style": "List Bullet",
+      "text": "7. Synthèse de l'Évaluation"
+    },
+    {
+      "idx": 391,
+      "style": "Normal",
+      "text": "CONCLUSION GÉNÉRALE ET PERSPECTIVES"
+    },
+    {
+      "idx": 392,
+      "style": "Normal",
+      "text": "1. Bilan Synthétique au Regard de la Problématique et des Objectifs"
+    },
+    {
+      "idx": 393,
+      "style": "Normal",
+      "text": "Le présent travail d'ingénierie logicielle s'est attaqué à un défi pour la sécurité alimentaire et la résilience climatique de la République du Burundi : concevoir une passerelle technologique automatisée capable de convertir des flux numériques massifs de prévisions météorologiques et hydrologiques globales en directives d'action agronomiques immédiatement compréhensibles et exploitables par différents acteurs. Au terme de ce projet, les quatre questions de recherche et d'ingénierie formulées dans l'introduction générale ont reçu des réponses concrètes et validées expérimentalement :"
+    },
+    {
+      "idx": 394,
+      "style": "List Bullet",
+      "text": "Réponse à la Question 1 (Ingénierie des données) : La mise en œuvre conjointe du client binaire FlatBuffers openmeteo-requests et de la bibliothèque requests-cache adossée à une base locale SQLite (.cache.sqlite) a démontré qu'il est possible de collecter et de synchroniser des données horaires sur 14 jours (7 passés et 7 futurs) avec un temps de réponse inférieur à 15 ms en cache et une résilience prouvée face à 5 coupures simulées, sans exiger de serveur de base de données relationnelle lourd et coûteux."
+    },
+    {
+      "idx": 395,
+      "style": "List Bullet",
+      "text": "Réponse à la Question 2 (Modélisation métier et agronomie) : Le découpage modulaire du moteur pur (measures.py et advice.py) a permis de formaliser les seuils officiels de l'IGEBU (50 mm en plaine, 100 mm en montagne) et les fiches culturales de l'ISABU sous forme de fonctions pures sans effet de bord, validées par 31 tests unitaires pytest avec 100% de succès. Le système neutralise toute donnée manquante ou corrompue (NaN) en basculant vers le statut déontologique explicite 'non_evalue'."
+    },
+    {
+      "idx": 396,
+      "style": "List Bullet",
+      "text": "Réponse à la Question 3 (Architecture logicielle et performance) : Le mariage architectural entre le framework asynchrone FastAPI (ASGI) propulsé par Python 3.14 et le framework Svelte 5 / SvelteKit 3 fonctionnant en mode Runes (sans DOM virtuel) offre une vélocité remarquable sur terminal mobile. Grâce au patron Backend-For-Frontend (BFF), le bundle initial reste inférieur à 250 Ko gzippé et le premier affichage s'exécute en moins de 1,2 seconde sur réseau 3G rural."
+    },
+    {
+      "idx": 397,
+      "style": "List Bullet",
+      "text": "Réponse à la Question 4 (Déontologie sociotechnique) : Le système a établi une déontologie institutionnelle en bannissant tout terme anxiogène ('évacuation', 'inondation certaine') et en cantonnant explicitement l'outil à un rôle de conseil consultatif, préservant scrupuleusement les prérogatives régaliennes exclusives de l'IGEBU et de la Protection Civile."
+    },
+    {
+      "idx": 398,
+      "style": "Normal",
+      "text": "L'ensemble des cinq objectifs spécifiques chiffrés (OS1 à OS5) détaillés au Tableau 0.1 a été atteint, faisant d'AgroMétéo Burundi un prototype fonctionnel avec une  valeur opérationnelle."
+    },
+    {
+      "idx": 399,
+      "style": "Normal",
+      "text": "2. Limites Actuelles du Prototype"
+    },
+    {
+      "idx": 400,
+      "style": "Normal",
+      "text": "Le prototype souffre de plusieurs limites objectives qui constituent autant de chantiers pour la suite du projet :"
+    },
+    {
+      "idx": 401,
+      "style": "List Bullet",
+      "text": "1. Dépendance exclusive vis-à-vis des modèles globaux : Les prévisions actuelles dépendent exclusivement des modèles numériques mondiaux (ECMWF, GFS). Bien que très performants, ces modèles ne sont pas encore recalibrés en temps réel par les observations des stations physiques au sol de l'IGEBU."
+    },
+    {
+      "idx": 402,
+      "style": "List Bullet",
+      "text": "2. Couverture territoriale partielle : Le déploiement actuel couvre 5 provinces représentatives (Bujumbura Mairie, Bujumbura Rural, Gitega, Karusi, Rutana). Les 13 autres provinces du pays (notamment le grand nord agricole de Ngozi, Kayanza et Kirundo) ne sont pas encore intégrées dans l'interface."
+    },
+    {
+      "idx": 403,
+      "style": "List Bullet",
+      "text": "3. Exclusion temporaire des exploitants non connectés : Le système est conçu sous forme d'application web réactive. Or, une fraction substantielle des petits producteurs agricoles burundais en milieu rural reculé ne possède pas de smartphone et ne dispose pas d'abonnement Internet mobile."
+    },
+    {
+      "idx": 404,
+      "style": "Normal",
+      "text": "3. Perspectives d'Évolution"
+    },
+    {
+      "idx": 405,
+      "style": "Normal",
+      "text": "Six axes d'approfondissement (les deux derniers étant facultatifs) sont programmés pour la suite:"
+    },
+    {
+      "idx": 411,
+      "style": "Normal",
+      "text": "Perspective 1 : Intégration des prélèvements de stations agro-météorologiques locales"
+    },
+    {
+      "idx": 412,
+      "style": "Normal",
+      "text": "Cette perspective consiste à exploiter les données locales fournies par une institution telle que l’IGEBU pour corriger, calibrer et affiner les modèles de prévision globaux (tels qu’Open-Meteo), améliorant ainsi la précision des données climatiques à l'échelle locale."
+    },
+    {
+      "idx": 413,
+      "style": "Normal",
+      "text": "Perspective 2 : Extension territoriale aux 18 provinces et nouvelles provinces"
+    },
+    {
+      "idx": 414,
+      "style": "Normal",
+      "text": "Le catalogue des zones d'observation sera étendu pour intégrer la totalité des 18 anciennes provinces administratives et s'adapter au nouveau découpage territorial du Burundi en 5 provinces (Bujumbura, Burunga, Butanyerera, Gitega, Buhumuza), en affinant les coordonnées géographiques au niveau de chaque chef-lieu communal."
+    },
+    {
+      "idx": 415,
+      "style": "Normal",
+      "text": "Perspective 3 : Descente d'échelle par intelligence artificielle (machine learning / LSTM)"
+    },
+    {
+      "idx": 416,
+      "style": "Normal",
+      "text": "L'équipe développera des modèles d'apprentissage automatique entraînés sur les séries historiques pour réaliser un downscaling statistique (technique utilisée en météorologie et en climatologie pour faire le lien entre les modèles climatiques globaux et la réalité locale) des prévisions globales, en apprenant les biais orographiques locaux créés par les micro-reliefs collinaires burundais."
+    },
+    {
+      "idx": 417,
+      "style": "Normal",
+      "text": "Perspective 4 : Réintroduction d'un Modèle de Glissements Haute Résolution"
+    },
+    {
+      "idx": 418,
+      "style": "Normal",
+      "text": "En couplant les données altimétriques haute résolution du Modèle Numérique de Terrain (Copernicus DEM à 30 mètres) avec des cartes de pente fines et les données satellitaires d'humidité des sols (NASA SMAP / Sentinel-1), le module de sensibilité aux glissements de terrain sera réintroduit sur des bases scientifiques inattaquables, sans risque de fausses alertes."
+    },
+    {
+      "idx": 419,
+      "style": "Normal",
+      "text": "Perspective 5 : Collecte participative citoyenne (crowdsourcing agro-climatique)"
+    },
+    {
+      "idx": 420,
+      "style": "Normal",
+      "text": "L'application pourrait intégrer un module de remontée d'incidents permettant aux intervenants de photographier et géolocaliser des sinistres réels (débordement d'un ravin, chute de grêle, début d'érosion). Ces observations empiriques alimenteront une base de vérité terrain pour recalibrer dynamiquement les seuils de vigilance."
+    },
+    {
+      "idx": 421,
+      "style": "Normal",
+      "text": "Perspective 6 : Passerelle multicanale sans Internet (SMS / USSD)"
+    },
+    {
+      "idx": 422,
+      "style": "Normal",
+      "text": "Pour réduire l’impact de la fracture numérique, l'équipe développera potentiellement un microservice passerelle connecté aux API des opérateurs de télécommunications nationaux (Lumitel, Econet Leo). Ce service permettra à tout agriculteur équipé d'un téléphone mobile basique 2G de composer un code USSD ou d'envoyer un SMS court avec le nom de sa colline pour recevoir instantanément (potentiellement en Kirundi) l'avis agricole du jour."
+    },
+    {
+      "idx": 449,
+      "style": "Normal",
+      "text": "ANNEXE A — DIAGRAMMES UML STRUCTURÉS ET DÉTAILLÉS"
+    },
+    {
+      "idx": 450,
+      "style": "Normal",
+      "text": "La présente annexe regroupe les spécifications tabulaires exhaustives des diagrammes UML de modélisation logicielle du système AgroMétéo Burundi, complétant les représentations graphiques présentées au Chapitre III."
+    },
+    {
+      "idx": 451,
+      "style": "Normal",
+      "text": "A.1 Matrice Détaillée des Cas d'Utilisation"
+    },
+    {
+      "idx": 452,
+      "style": "Normal",
+      "text": "Tableau A.1 — Spécification tabulaire détaillée des cas d'utilisation"
+    },
+    {
+      "idx": 454,
+      "style": "Normal",
+      "text": "A.2 Dictionnaire des Événements et Transitions d'États"
+    },
+    {
+      "idx": 455,
+      "style": "Normal",
+      "text": "Tableau A.2 — Dictionnaire formel des transitions de la machine à états de vigilance"
+    },
+    {
+      "idx": 457,
+      "style": "Normal",
+      "text": "ANNEXE B — SCHÉMA D'ARCHITECTURE DE LA BASE DE DONNÉES"
+    },
+    {
+      "idx": 458,
+      "style": "Normal",
+      "text": "Cette annexe documente les spécifications techniques de la base de données NoSQL documentaire MongoDB Atlas ainsi que la structure physique de la base de données locale de mise en cache SQLite."
+    },
+    {
+      "idx": 459,
+      "style": "Normal",
+      "text": "B.1 Spécification de la Collection MongoDB 'users'"
+    },
+    {
+      "idx": 460,
+      "style": "Normal",
+      "text": "Tableau B.1 — Dictionnaire des données de la collection MongoDB 'users'"
+    },
+    {
+      "idx": 462,
+      "style": "Normal",
+      "text": "B.2 Spécification des Tables de Cache SQLite (.cache.sqlite)"
+    },
+    {
+      "idx": 463,
+      "style": "Normal",
+      "text": "Tableau B.2 — Schéma physique des tables du cache local SQLite"
+    },
+    {
+      "idx": 465,
+      "style": "Normal",
+      "text": "ANNEXE D — MANUEL D'INSTALLATION, DE CONFIGURATION ET D'UTILISATION"
+    },
+    {
+      "idx": 474,
+      "style": "Normal",
+      "text": "[1] Open-Meteo GmbH, « Open-Meteo Weather Forecast API Documentation », 2026. [En ligne]. Disponible sur : https://open-meteo.com/en/docs."
+    },
+    {
+      "idx": 475,
+      "style": "Normal",
+      "text": "[2] Copernicus Emergency Management Service & ECMWF, « Global Flood Awareness System (GloFAS) River Discharge Forecast API », European Commission, 2026. [Source S2 du document de cadrage]."
+    },
+    {
+      "idx": 476,
+      "style": "Normal",
+      "text": "[3] NASA Goddard Space Flight Center, « Landslide Hazard Assessment for Situational Awareness (LHASA) Model », NASA Earth Science, 2024. [Source S3 du document de cadrage]."
+    },
+    {
+      "idx": 477,
+      "style": "Normal",
+      "text": "[4] OpenStreetMap Foundation, « OpenStreetMap Open Data Tiles and Leaflet JavaScript Mapping Library », 2026. [Source S4 du document de cadrage]."
+    },
+    {
+      "idx": 478,
+      "style": "Normal",
+      "text": "[5] Équipe de Projet UPG, « Document de cadrage du projet à développer en deux semaines : Système de veille météo et climatique au Burundi », Version révisée du 11 octobre 2026, 2026."
+    },
+    {
+      "idx": 479,
+      "style": "Normal",
+      "text": "[6] Institut Géographique du Burundi (IGEBU), « Normes pluviométriques nationales et bulletins décadaires de suivi agrométéorologique au Burundi », Ministère de l'Environnement, Gitega, Burundi, 2024. [Source S6 du cadrage]."
+    },
+    {
+      "idx": 480,
+      "style": "Normal",
+      "text": "[7] C. Funk et al., « The Climate Hazards Center InfraRed Precipitation with Stations (CHIRPS) v3 : A high-resolution rainfall dataset for climate monitoring », Scientific Data, vol. 11, n° 1, pp. 1-18, 2024. [Source S7 du cadrage]."
+    },
+    {
+      "idx": 481,
+      "style": "Normal",
+      "text": "[8] R. Harris and Svelte Core Team, « Svelte 5 Documentation : Runes, Reactivity without Virtual DOM and SvelteKit Architecture », Svelte Society, 2025. [En ligne]. Disponible sur : https://svelte.dev/docs."
+    },
+    {
+      "idx": 482,
+      "style": "Normal",
+      "text": "[9] S. Ramírez, « FastAPI : Modern, High-Performance Web Framework for Python with Automatic Pydantic Validation », 2025. [En ligne]. Disponible sur : https://fastapi.tiangolo.com."
+    },
+    {
+      "idx": 483,
+      "style": "Normal",
+      "text": "[10] R. T. Fielding, « Architectural Styles and the Design of Network-based Software Architectures », Ph.D. dissertation, Department of Information and Computer Science, University of California, Irvine, 2000."
+    },
+    {
+      "idx": 484,
+      "style": "Normal",
+      "text": "[11] A. Biryukov, D. Dinu, and P. Khovratovich, « Argon2 : the memory-hard function for password hashing and other applications », Password Hashing Competition Winner, RFC 9106, 2021."
+    },
+    {
+      "idx": 485,
+      "style": "Normal",
+      "text": "[12] D. Brumley and D. Boneh, « Remote timing attacks are practical », Computer Networks, vol. 48, n° 5, pp. 701-716, 2005."
+    },
+    {
+      "idx": 486,
+      "style": "Normal",
+      "text": "[13] M. Jones, J. Bradley, and N. Sakimura, « JSON Web Token (JWT) », Internet Engineering Task Force (IETF), RFC 7519, 2015."
+    },
+    {
+      "idx": 487,
+      "style": "Normal",
+      "text": "[14] World Wide Web Consortium (W3C), « Web Content Accessibility Guidelines (WCAG) 2.1 », W3C Recommendation, 2018. [En ligne]. Disponible sur : https://www.w3.org/TR/WCAG21/."
+    },
+    {
+      "idx": 488,
+      "style": "Normal",
+      "text": "[15] D. Clegg and R. Barker, « Case Method Fast-Track : A RAD Approach (MoSCoW Prioritization) », Addison-Wesley, Wokingham, 1994."
+    },
+    {
+      "idx": 489,
+      "style": "Normal",
+      "text": "[16] Object Management Group (OMG), « Unified Modeling Language (OMG UML) Specification, Version 2.5.1 », OMG Document formal/2017-12-05, 2017."
+    },
+    {
+      "idx": 490,
+      "style": "Normal",
+      "text": "[17] Institut des Sciences Agronomiques du Burundi (ISABU), « Fiches techniques des cultures vivrières et guides de gestion agro-climatique collinaire au Burundi », Bujumbura, Burundi, 2023. [Source S5 du cadrage]."
+    },
+    {
+      "idx": 491,
+      "style": "Normal",
+      "text": "[18] K. Schwaber and J. Sutherland, « The Scrum Guide : The Definitive Guide to Scrum : The Rules of the Game », Scrum.org, 2020."
+    },
+    {
+      "idx": 492,
+      "style": "Normal",
+      "text": "[19] M. Cohn, « Succeeding with Agile : Software Development Using Scrum », Addison-Wesley Professional, Boston, MA, 2009."
+    },
+    {
+      "idx": 493,
+      "style": "Normal",
+      "text": "[20] S. Newman, « Building Microservices : Designing Fine-Grained Systems (Backends for Frontends Pattern) », O'Reilly Media, Sebastopol, CA, 2021."
+    },
+    {
+      "idx": 494,
+      "style": "Normal",
+      "text": "[21] World Meteorological Organization (WMO), « Guidelines on Multi-hazard Early Warning Systems », WMO-No. 1280, Geneva, Switzerland, 2022."
+    },
+    {
+      "idx": 495,
+      "style": "Normal",
+      "text": "[22] République du Burundi, Ministère de l'Environnement, de l'Agriculture et de l'Élevage, « Plan National d'Adaptation aux Changements Climatiques (PNA) », Bujumbura, 2023."
+    },
+    {
+      "idx": 496,
+      "style": "Normal",
+      "text": "[23] Université Polytechnique de Gitega (UPG), Faculté des Technologies de l'Information et de la Communication (TIC), « Canevas de Rapport Projet II — Département de Génie Logiciel », Gitega, Burundi, 2025."
+    },
+    {
+      "idx": 497,
+      "style": "Normal",
+      "text": "[24] F. Chollet, « Deep Learning with Python, Second Edition », Manning Publications, Shelter Island, NY, 2021."
+    },
+    {
+      "idx": 498,
+      "style": "Normal",
+      "text": "[25] J. Nielsen and R. Budiu, « Mobile Usability », New Riders Press, Berkeley, CA, 2012."
+    }
+  ],
+  "acronyms_found": [
+    "AA",
+    "AJAX",
+    "ANNEXE",
+    "API",
+    "ARIA",
+    "ART",
+    "ASGI",
+    "ASIC",
+    "BASE",
+    "BFF",
+    "BSD",
+    "BSON",
+    "CA",
+    "CHAPITRE",
+    "CHIRPS",
+    "CIBLE",
+    "CONCEPTION",
+    "CONCLUSION",
+    "CORS",
+    "CSRF",
+    "CSS",
+    "DE",
+    "DEM",
+    "DES",
+    "DIAGNOSTIC",
+    "DIAGRAMMES",
+    "DOM",
+    "DPAE",
+    "DRF",
+    "ECMWF",
+    "EF",
+    "ENF",
+    "ET",
+    "FCP",
+    "GET",
+    "GFS",
+    "GPU",
+    "HIT",
+    "HMAC",
+    "HTML",
+    "HTTP",
+    "IEEE",
+    "IETF",
+    "IGEBU",
+    "II",
+    "III",
+    "ISABU",
+    "IV",
+    "JS",
+    "JSON",
+    "JWT",
+    "LA",
+    "LHASA",
+    "LIEUX",
+    "LSTM",
+    "MA",
+    "MANUEL",
+    "MISS",
+    "MIT",
+    "MVP",
+    "NASA",
+    "NY",
+    "OMG",
+    "ONG",
+    "PC",
+    "PIB",
+    "PNA",
+    "POST",
+    "RAD",
+    "RAM",
+    "REST",
+    "RFC",
+    "SHA",
+    "SMAP",
+    "SMART",
+    "SMS",
+    "SOLUTION",
+    "SSR",
+    "TESTS",
+    "TIC",
+    "TOUT",
+    "TR",
+    "TTL",
+    "UI",
+    "UML",
+    "UPG",
+    "URI",
+    "URL",
+    "USSD",
+    "UTC",
+    "UX",
+    "VALIDATION",
+    "WAI",
+    "WCAG",
+    "WMO",
+    "WSGI",
+    "XSS"
+  ],
+  "citations_found": [
+    "[10]",
+    "[11]",
+    "[12]",
+    "[13]",
+    "[14]",
+    "[15]",
+    "[16]",
+    "[17]",
+    "[18]",
+    "[19]",
+    "[1]",
+    "[20]",
+    "[21]",
+    "[22]",
+    "[23]",
+    "[24]",
+    "[25]",
+    "[2]",
+    "[3]",
+    "[4]",
+    "[5]",
+    "[6]",
+    "[7]",
+    "[8]",
+    "[9]"
+  ],
+  "table_summaries": [
+    {
+      "table_index": 0,
+      "rows": 6,
+      "cols": 4,
+      "first_cell": "Code"
+    },
+    {
+      "table_index": 1,
+      "rows": 1,
+      "cols": 1,
+      "first_cell": "Mention Déontologique Préliminaire : Afin de respecter strictement la réglementa"
+    },
+    {
+      "table_index": 2,
+      "rows": 7,
+      "cols": 7,
+      "first_cell": "Zone / Localité"
+    },
+    {
+      "table_index": 3,
+      "rows": 5,
+      "cols": 4,
+      "first_cell": "Catégorie d'Acteur"
+    },
+    {
+      "table_index": 4,
+      "rows": 21,
+      "cols": 5,
+      "first_cell": "Code EF"
+    },
+    {
+      "table_index": 5,
+      "rows": 11,
+      "cols": 6,
+      "first_cell": "Code ENF"
+    },
+    {
+      "table_index": 6,
+      "rows": 6,
+      "cols": 4,
+      "first_cell": "Entité / Classe"
+    },
+    {
+      "table_index": 7,
+      "rows": 1,
+      "cols": 1,
+      "first_cell": "{   \"_id\":ObjectId(\"672100000000000000000001\"),   \"username\":\"moniteur.gitega@ag"
+    },
+    {
+      "table_index": 8,
+      "rows": 6,
+      "cols": 4,
+      "first_cell": "Jour Ouvré"
+    },
+    {
+      "table_index": 9,
+      "rows": 7,
+      "cols": 4,
+      "first_cell": "Composant Logiciel"
+    },
+    {
+      "table_index": 10,
+      "rows": 32,
+      "cols": 4,
+      "first_cell": "Fichier de Test"
+    },
+    {
+      "table_index": 11,
+      "rows": 1,
+      "cols": 1,
+      "first_cell": "Vision Stratégique du Projet : Les perspectives d’amélioration positionnent Agro"
+    },
+    {
+      "table_index": 12,
+      "rows": 9,
+      "cols": 6,
+      "first_cell": "Identifiant"
+    },
+    {
+      "table_index": 13,
+      "rows": 6,
+      "cols": 4,
+      "first_cell": "État Source"
+    },
+    {
+      "table_index": 14,
+      "rows": 5,
+      "cols": 4,
+      "first_cell": "Champ BSON"
+    },
+    {
+      "table_index": 15,
+      "rows": 6,
+      "cols": 5,
+      "first_cell": "Table SQLite"
+    }
+  ]
+}

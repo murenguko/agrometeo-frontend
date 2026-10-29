@@ -1,0 +1,29 @@
+{
+  "figures": {
+    "Figure 1.2 — Diagramme de flux du parcours utilisateur complet": 12,
+    "Figure 2.1 — Diagramme architectural du patron Backend-For-Frontend (BFF)": 16,
+    "Figure 3.1 — Architecture logicielle globale en couches et interconnexions de données": 26,
+    "Figure 3.2 — Diagramme de cas d'utilisation du système AgroMétéo Burundi": 29,
+    "Figure 3.3 — Diagramme de classes métier du backend AgroMétéo Burundi": 29,
+    "Figure 3.4 — Diagramme de composants logiciels du système": 31,
+    "Figure 3.5 — Diagramme de séquence de l'authentification OAuth2 / JWT": 32,
+    "Figure 3.6 — Diagramme de séquence de la consultation d'un bulletin agro-météorologique": 33,
+    "Figure 4.1 — Structure modulaire de la base de code du backend FastAPI": 40,
+    "Figure 4.2 — Structure modulaire du frontend SvelteKit": 43
+  },
+  "tables": {
+    "Tableau 0.1 — Objectifs Spécifiques et Indicateurs Mesurables de Succès (SMART)": 4,
+    "Tableau 1.1 — Caractérisation géographique et agro-climatique des zones pilotes d'étude": 8,
+    "Tableau 1.2 — Matrice des besoins exprimés par typologie d'utilisateurs": 10,
+    "Tableau 3.1 — Spécification formelle des exigences fonctionnelles (EF-01 à EF-20)": 22,
+    "Tableau 3.2 — Spécification formelle des exigences non fonctionnelles (ENF-01 à ENF-10)": 24,
+    "Tableau 3.3 — Description des classes et modules logiciels métier": 30,
+    "Tableau 3.4 — Planification Scrum et exécution des sprints sur 10 jours ouvrés": 36,
+    "Tableau 4.1 — Matrice de l'environnement technologique et outillage de développement": 38,
+    "Tableau 5.1 — Registre exhaustif des 31 tests unitaires validés sous pytest (100% succès)": 46,
+    "Tableau A.1 — Spécification tabulaire détaillée des cas d'utilisation": 55,
+    "Tableau A.2 — Dictionnaire formel des transitions de la machine à états de vigilance": 56,
+    "Tableau B.1 — Dictionnaire des données de la collection MongoDB 'users'": 57,
+    "Tableau B.2 — Schéma physique des tables du cache local SQLite": 57
+  }
+}

@@ -1,0 +1,736 @@
+=== PARAGRAPHS ===
+[0] INTRODUCTION GÉNÉRALE
+[1] 1. Contexte Général et Justification
+[2] Le Burundi, pays enclavé d'Afrique centrale et orientale couvrant une superficie de 27 834 km², se caractérise par une topographie contrastée. S'étendant depuis les rives du lac Tanganyika à 773 mètres d'altitude jusqu'aux sommets de la crête Congo-Nil culminant à plus de 2 670 mètres, le relief burundais façonne une multitude de microclimats locaux soumis à un régime pluviométrique rythmé par les saisons culturales A (septembre à janvier) et B (février à juin), complétées dans les bas-fonds marécageux par la saison maraîchère de contre-saison C (juillet à septembre) [1]. L'agriculture représente le socle vital de la société et de l'économie nationale : elle emploie entre 85 % et 90 % de la population active, génère près de 40 % du Produit Intérieur Brut (PIB) et assure la quasi-totalité de l'apport calorique des ménages ruraux [2].
+[3] Néanmoins, le secteur agricole burundais demeure très majoritairement pluvial, ce qui le rend dramatiquement vulnérable aux aléas hydrométéorologiques extrêmes amplifiés par le changement climatique global [3]. Au cours de la dernière décennie, la fréquence et l'intensité des événements perturbateurs ont atteint des niveaux critiques : les précipitations torrentielles soudaines provoquent des crues fluviales dévastatrices dans la plaine de la Rusizi et sur le littoral de Bujumbura (avec les inondations récurrentes du quartier de Gatumba et des berges des rivières Ntahangwa, Muha et Mutimbuzi), tandis que les fortes pentes dénudées des versants de Mumirwa et de la crête subissent une érosion régressive majeure, un ravinement généralisé et des glissements de terrain mortels [4]. À l'inverse, des retards de début de saison pluvieuse ou des pauses pluviométriques inopinées de plus de cinq à sept jours durant les phases critiques de floraison entraînent des chutes drastiques de rendement pour le maïs, le haricot et les tubercules, plongeant des milliers de familles rurales dans l'insécurité alimentaire immédiate.
+[4] Face à ces défis pressants, la disponibilité d'une information agro-météorologique locale, fiable et anticipée constitue un levier d'adaptation indispensable pour sécuriser les pratiques culturales paysannes : choix opportun des semis, protection des récoltes sur les aires de séchage en plein air, drainage préventif des parcelles et consolidation des diguettes de bas-fonds rizicoles. Le présent projet d'ingénierie logicielle s'inscrit précisément dans cette dynamique de résilience climatique.
+[5] 2. Problématique de Recherche et d'Ingénierie
+[6] En dépit de l'essor remarquable des technologies de l'information et de la détection spatiale globale, un fossé opérationnel et technologique profond subsiste entre les données climatiques satellitaires mondiales et les réalités quotidiennes des producteurs agricoles burundais. Cette situation découle principalement de quatre facteurs structurels:
+[7] 1. Insuffisance et dispersion du réseau d'observation au sol : Le réseau d'observation météorologique terrestre géré par l'Institut Géographique du Burundi (IGEBU) fait face à des contraintes matérielles, financières et énergétiques. Avec un nombre réduit de stations synoptiques et agro-climatologiques automatiques opérationnelles à l'échelle nationale, de vastes étendues collinaires et de bassins versants échappent à un suivi continu en temps réel, créant d'importantes zones d'ombre d'observation.
+[8] 2. Complexité et technicité excessive des flux de données globaux : Les modèles de prévision numérique du temps à haute résolution (Copernicus, ECMWF, GFS, Open-Meteo) et les systèmes mondiaux de surveillance des inondations (GloFAS) produisent des flux massifs de données brutes. Cependant, ces données sont distribuées via des API complexes, encodées dans des formats binaires spécialisés (GRIB2, NetCDF, FlatBuffers) et exprimées en unités physiques pures (m³/s, kg/m², flux radiatif) hermétiques aux différents acteurs sur terrain.
+[9] 3. Absence de passerelle décisionnelle agronomique contextualisée : Une prévision physique brute annonçant par exemple « 35 mm de précipitations sur 24 heures » ou un débit fluvial de « 18 m³/s » ne constitue pas en soi une information décisionnelle exploitable. Le technicien agronome et le paysan ont besoin de savoir quelles sont les conséquences directes pour leurs cultures spécifiques : faut-il rentrer d'urgence le maïs étalé sur les claies de séchage ? Le riz de bas-fond court-il un risque d'asphyxie par rupture des levées de terre ? Le bananier risque-t-il le déracinement face à des rafales de vent de 45 km/h ? Il existe une absence patente de passerelle algorithmique automatisée traduisant les grandeurs physiques en directives agronomiques pragmatiques, conformes aux fiches techniques de l'Institut des Sciences Agronomiques du Burundi (ISABU).
+[10] 4. Latence de diffusion et contraintes d'infrastructure locale : Les canaux historiques de dissémination (bulletins décadaires sur support papier, synthèses radiodiffusées hebdomadaires) souffrent d'une latence temporelle incompatible avec la gestion des aléas d'urgence. Par ailleurs, l'infrastructure numérique locale (terminaux mobiles d'entrée de gamme, réseaux 2G/3G instables, coût élevé des données mobiles) rend inopérantes les applications web lourdes ou nécessitant des transferts volumineux.
+[11] 3. Questions Spécifiques de Recherche et d'Ingénierie
+[12] Afin d'apporter une solution logicielle pérenne, robuste et adaptée au contexte burundais, le présent travail articule sa démarche méthodologique autour de quatre questions directrices fondamentales :
+[13] Question 1 (Ingénierie des données) : Comment collecter, normaliser, synchroniser et mettre en cache en temps quasi-réel des séries temporelles hétérogènes de prévisions météorologiques horaires (Open-Meteo) et de débits hydrologiques mondiaux (GloFAS), sans imposer une infrastructure serveur matérielle locale lourde et coûteuse ?
+[14] Question 2 (Modélisation métier et agronomie) : Quels modèles mathématiques, quelles règles logiques formelles et quels seuils quantitatifs permettent de convertir des séries continues d'altération physique (précipitations 24h/72h, rafales de vent, percentiles de débit fluvial p75) en conseils agricoles d'action immédiate par culture, tout en préservant une stricte neutralité fonctionnelle ?
+[15] Question 3 (Architecture logicielle et performance) : Quelle architecture logicielle moderne (paradigme client-serveur, patron Backend-For-Frontend, réactivité par compilation Svelte 5 sans DOM virtuel, API asynchrone ASGI FastAPI) permet de garantir une fluidité d'affichage optimale, une consommation de bande passante minimale et une haute résilience aux coupures réseau intermittentes sur terminaux mobiles au Burundi ?
+[16] Question 4 (Déontologie et responsabilité sociotechnique) : Comment concilier une aide proactive à la décision agricole collinaire avec les impératifs déontologiques et juridiques nationaux, de manière à soutenir les communautés sans empiéter sur l’autorité institutionnelle des alertes officielles dévolu à l'IGEBU et à la Protection Civile ?
+[17] 4. Objectif Général du Projet
+[18] L'objectif général du projet consiste à concevoir, développer, tester et évaluer un prototype complet de Système de Veille Météorologique et Climatique pour le Burundi (baptisé AgroMétéo Burundi). Ce système s'articule autour d'une interface cartographique web réactive et ergonomique (SvelteKit / Sveaflet / Tailwind CSS) et d'un serveur d'agrégation décisionnel asynchrone (FastAPI / Python 3.14 / MongoDB / Cache SQLite), capable de fournir aux encadreurs agricoles, coopératives et décideurs des visualisations horaires fluides et des avis agro-climatiques contextualisés par zone géographique et par culture vivrière.
+[19] 5. Objectifs Spécifiques et Indicateurs Mesurables de Succès (SMART)
+[20] Pour assurer une évaluation objective et rigoureuse de la réalisation, l'objectif général est décliné en cinq objectifs spécifiques conformes aux critères SMART (Spécifique, Mesurable, Atteignable, Réaliste, Temporellement défini) :
+[21] Tableau 0.1 — Objectifs Spécifiques et Indicateurs Mesurables de Succès (SMART)
+[22] 
+[23] 6. Structure Globale du Rapport
+[24] Le présent rapport académique est rédigé dans le respect scrupuleux des normes méthodologiques de la Faculté des TIC de l'Université Polytechnique de Gitega (UPG). Conformément aux directives validées pour ce projet de fin de cycle, le document s'ouvre directement sur cette Introduction Générale et s'organise en cinq chapitres substantiels, suivis d'une Conclusion Générale et d'Annexes techniques approfondies :
+[25] Chapitre I — État des lieux et diagnostic : Présente le cadre d'étude géographique, caractérise en détail les 5 zones pilotes burundaises (Bujumbura Mairie, Bujumbura Rural scindée en Imbo et Mumirwa, Gitega, Karusi, Rutana), modélise les besoins des usagers à travers trois personas types, définit les contraintes opérationnelles et expose l'étude de faisabilité multidimensionnelle.
+[26] Chapitre II — Étude théorique et état de l'art : Établit l'assise conceptuelle du travail par une confrontation comparative rigoureuse des technologies logicielles contemporaines : architectures client-serveur et patron BFF, frameworks front-end (SvelteKit vs React/Vue/Angular), frameworks back-end (FastAPI vs Django/Node/Spring), bases de données (MongoDB Atlas et SQLite vs PostgreSQL relationnel), protocoles d'échange d'API, sécurité cryptographique (Argon2id, OAuth2, JWT) et accessibilité numérique (WCAG 2.1).
+[27] Chapitre III — Conception de la solution cible : Formalise l'ensemble des spécifications fonctionnelles (EF-01 à EF-20) et non fonctionnelles (ENF-01 à ENF-10), détaille l'architecture applicative globale, présente la modélisation UML complète (cas d'utilisation, classes, composants, séquences, états-transitions, déploiement physique), décrit le schéma des données, formalise mathématiquement les règles métier agro-climatiques et expose le calendrier Agile Scrum sur deux semaines.
+[28] Chapitre IV — Implémentation et réalisation : Décrit la matérialisation technique de la solution au sein des dépôts weather-backend et weather-app : outillage moderne (Python 3.14, uv, Vite, Svelte 5 en mode Runes), implémentation des routeurs d'authentification et de météo, services de collecte et de calcul pur, composants cartographiques Leaflet et graphiques svelteplot, gestion des cookies sécurisés et politique de gestion des versions Git.
+[29] Chapitre V — Tests, validation et évaluation : Expose le protocole d'assurance qualité et les résultats expérimentaux des tests (31 tests unitaires pytest validés à 100%, compilation de production Vite sans erreur, tests de responsive design et de charge). Ce chapitre intègre la pièce maîtresse de notre étude : une comparaison détaillée, critique et argumentée entre le Document de Cadrage MVP initial et l'Implémentation Réelle, justifiant scientifiquement chaque divergence (zonage territorial, substitution de PostgreSQL par MongoDB, sécurisation avancée Argon2id, retrait du modèle LHASA et cartographie dynamique des cultures ISABU).
+[30] Conclusion générale et perspectives : Dresse le bilan synthétique des réalisations au regard des questions de recherche posées, explicite les limites actuelles du prototype et trace les perspectives technologiques majeures pour la deuxième année du projet (diffusion multicanale USSD/SMS pour téléphones basiques, réseau de stations IoT locales, modèles d'intelligence artificielle de descente d'échelle, multilinguisme en langue nationale Kirundi).
+[31] Annexes et Références : Fournissent les diagrammes UML détaillés (Annexe A), le schéma d'architecture physique de la base de données (Annexe B), le manuel complet d'installation et d'exploitation pas à pas (Annexe D), ainsi que l'arborescence du code et les métriques de qualité logicielle (Annexe F), complétés par les références bibliographiques normalisées au format IEEE.
+[32] 
+[33] CHAPITRE I — ÉTAT DES LIEUX ET DIAGNOSTIC
+[34] 1. Présentation du Cadre d'Étude et Périmètre des Zones Pilotes
+[35] Le déploiement s’est fait sur cinq zones pilotes territoriales réelles correspondant aux anciennes provinces administratives du Burundi (Bujumbura Mairie, Bujumbura Rural, Gitega, Karusi, Rutana), en intégrant une distinction topographique et climatique fondamentale pour Bujumbura Rural, subdivisée entre la plaine de l'Imbo et les contreforts montagneux de Mumirwa.
+[36] Figure 1.1 — Profil altimétrique schématique du Burundi et découpage des zones d'observation
+[37] Ce découpage repose sur une analyse agro-écologique  de la diversité géographique du pays :
+[38] 1. Bujumbura Mairie (Plaine de l'Imbo, ~820 m) : Située sur les berges nord-est du lac Tanganyika à une altitude moyenne de 820 mètres, cette zone urbaine et périurbaine de plaine alluviale est drainée par plusieurs cours d'eau torrentiels descendant des collines environnantes (Ntahangwa, Muha, Kanyosha, Mutimbuzi). Les vulnérabilités dominantes résident dans les inondations urbaines éclair, l'engorgement des sols sablo-limoneux et les montées des eaux lacustres [4]. Cultures prévalentes associées : riz, maïs, manioc et bananier.
+[39] 2. Bujumbura Rural (Zone mixte à fort contraste) : Cette entité territoriale présente un gradient altitudinal extrême s'étendant de 773 mètres (plaine bordière de l'Imbo) à plus de 2 600 mètres (contreforts de Mumirwa et crête Congo-Nil). Face à cette hétérogénéité, le système opère une scission opérationnelle en deux sous-zones bien distinctes :
+[40] • Sous-zone Imbo (Basse altitude, < 1 000 m) : Altitude inférieure à 1 000 m. Climat tropical chaud et sec de basse altitude, vulnérable aux crues d'inondation des rivières Mugere et Karonke et à l'ensablement des périmètres irrigués. Seuil pluviométrique critique fixé à 50 mm / 24 h. Cultures majeures : riz de bas-fond, maïs de plaine, manioc, bananier.
+[41] • Sous-zone Mumirwa (Hautes terres escarpées, > 1 350 m) : Altitude supérieure à 1 350 m (station de référence à 1 450 m). Pentes fortes (> 30 %), sols ferrallitiques acides hautement sensibles à l'érosion pluviale et au glissement de masse. Seuil critique fixé à 100 mm / 24 h. Cultures majeures : bananeraies d'altitude, maïs, haricot commun, manioc et pomme de terre.
+[42] 3. Gitega (Plateau central, 1 650–1 850 m) : Capitale politique du pays, située au cœur des plateaux centraux burundais à une altitude de 1 650 à 1 850 mètres. Le relief collinaire ondulé est caractérisé par un réseau dense de marais cultivés en saison sèche et des collines soumises à un lessivage intense des sols lors des gros orages. Seuil critique de 100 mm / 24 h. Cultures majeures : maïs, haricot, bananier, riz de marais, patate douce et pomme de terre.
+[43] 4. Karusi (Bassin de la Ruvubu, 1 500–1 750 m) : Province du centre-est traversée par le bassin versant majeur de la rivière Ruvubu (affluent du Nil) et ses tributaires (Gasenyi, Rusheri). Les bas-fonds marécageux y jouent un rôle stratégique pour la survie alimentaire mais sont exposés à des submersions prolongées, tandis que les collines connaissent des poches de sécheresse intra-saisonnières sévères. Seuil critique : 100 mm / 24 h. Cultures : maïs, haricot, bananier, manioc et patate douce.
+[44] 5. Rutana (Sud-Est et Dépression du Kumoso, 1 600–1 800 m) : Région du sud-est marquant la transition entre les escarpements de la crête et les dépressions agro-pastorales chaudes du Kumoso. Alternance marquée de risques de crues de piémont et de déficits hydriques prolongés en fin de saison A. Seuil critique : 100 mm / 24 h. Cultures : riz de dépression, maïs, haricot, manioc et bananier.
+[45] Tableau 1.1 — Caractérisation géographique et agro-climatique des zones pilotes d'étude
+[46] 
+[47] 
+[48] 
+[49] 
+[50] 
+[51] 
+[52] 2. Expression et Analyse du Besoin des Parties Prenantes
+[53] L'ingénierie des exigences a débuté par une étude minutieuse des attentes exprimées par les différentes strates d'acteurs intervenant dans la chaîne de valeur agro-climatique burundaise. Quatre grandes catégories d'utilisateurs ont été identifiées :
+[54] Tableau 1.2 — Matrice des besoins exprimés par typologie d'utilisateurs
+[55] 
+[56] 3. Modélisation des Personas et Parcours Utilisateurs
+[57] Afin de guider la conception de l'expérience utilisateur (UX) et des composants interactifs, trois personas représentatifs ont été élaborés avec leurs scénarios d'usage contextuels :
+[58] Persona 1 : Pierre — L'Encadreur Agricole de Terrain
+[59] Profil : 38 ans, résidant à Gitega, moniteur agricole communal rattaché à la DPAE.
+[60] Équipement & Connectivité : Smartphone Android, forfait data mobile limité (recharges de 500 Mo), déplacements quotidiens à moto sur les collines.
+[61] Objectif et Scénario : Consulte l'application chaque matin à 6h30 avant sa tournée pour identifier les collines où les agriculteurs étalent leur maïs ou haricot en plein air et déterminer si un risque de pluie torrentielle justifie d'ordonner le bâchage immédiat.
+[62] Frustration majeure : Les bulletins météo radio généralistes diffusent des prévisions nationales globales sans ancrage collinaire ni préconisation pour le séchage.
+[63] Persona 2 : Chantal Nibigira — La Présidente de Coopérative Rizicole
+[64] Profil : 44 ans, gestionnaire d'une coopérative de 120 exploitants dans la plaine de l'Imbo (Bujumbura Rural).
+[65] Équipement & Connectivité : Smartphone , connectivité 3G/4G intermittente.
+[66] Objectif et Scénario : A besoin d'une anticipation hydrologique de 24 à 48 heures lorsque des pluies massives sur les crêtes de Mumirwa menacent de faire gonfler brutalement la rivière Mugere, afin de mobiliser les riziculteurs pour fermer les vannes d'irrigation et consolider les levées de terre entourant les casiers.
+[67] Frustration majeure : L'arrivée brutale des eaux de crue la nuit emporte régulièrement les diguettes fragiles et ensable les parcelles à quelques semaines de la récolte.
+[68] Persona 3 : Dr. Alexis Manirakiza — Le Chargé de Mission Humanitaire et de Veille
+[69] Profil : 41 ans, expert en résilience climatique au sein d'un consortium d'ONG intervenant à Karusi et Rutana.
+[70] Équipement & Connectivité : Ordinateur portable et tablette tactile 4G professionnelle au bureau et en mission de terrain.
+[71] Objectif et Scénario : Consulte le tableau de bord pour comparer la situation agro-météorologique des différentes provinces et auditer la rigueur scientifique des modèles (vérification des seuils, des percentiles p75 et des sources de données Copernicus/Open-Meteo).
+[72] Frustration majeure : Méfiance absolue envers les systèmes « boîte noire » qui délivrent des alertes anxiogènes sans en expliciter la chaîne de calcul ni les marges d'erreur.
+[73] 
+[74] Figure 1.2 — Diagramme de flux du parcours utilisateur complet
+[75] 4. Contraintes Globales d'Ingénierie
+[76] Le projet est assujetti à un ensemble de contraintes qui ont dicté les choix d'architecture logicielle :
+[77] Contrainte de connectivité et de bande passante : L'application doit fonctionner de manière fluide sur des réseaux cellulaires 2G/3G burundais à fort taux de gigue et pertes de paquets. Elle doit minimiser la taille des requêtes HTTP et intégrer un mécanisme agressif de mise en cache côté serveur afin de continuer à servir des bulletins valides en cas de déconnexion momentanée des flux internationaux.
+[78] Contrainte d'accessibilité économique et données ouvertes : En tant que prototype universitaire développé sans financement externe, le système doit reposer exclusivement sur des technologies open-source, des bases de données à palier gratuit sans carte bancaire requise (MongoDB Atlas Tier M0 Sandbox) et des API météorologiques gratuites sans clé commerciale bloquante (Open-Meteo, GloFAS via OpenFlood).
+[79] Contrainte temporelle serrée (délai de 2 semaines) : Le calendrier opérationnel du Projet II de l'UPG imposait une livraison de la première version exploitable en un temps limité. Ce rythme condensé excluait le développement d'architectures distribuées et imposait une focalisation stricte sur le cœur de valeur (SvelteKit, FastAPI, moteur de règles pur).
+[80] Contrainte d'extensibilité et d'évolutivité : La base logicielle doit être conçue de façon modulaire et extensible, permettant d'accueillir ultérieurement les 18 provinces, de connecter des stations locales IGEBU et d'intégrer d’autres fonctionnalités (ex. passerelles de diffusion non-web (SMS/USSD), modèles statistiques de prédiction,…) .
+[81] 5. Étude de Faisabilité Multidimensionnelle
+[82] La viabilité du projet a fait l'objet d'une analyse d'ingénierie rigoureuse selon quatre dimensions :
+[83] 1. Faisabilité Technique : L'interopérabilité des composants logiciels modernes (SvelteKit 3, FastAPI, MongoDB Atlas, client Python openmeteo-requests et bibliothèque Sveaflet/Leaflet) a été validée expérimentalement. La séparation stricte entre les fonctions de calcul pur (sans état) et les routeurs d'accès aux données confère au système une testabilité et une robustesse raisonnables.
+[84] 2. Faisabilité Économique : L'ensemble des technologies mises en œuvre est libre de droits de licence (licences MIT, Apache 2.0, BSD). Les coûts d'infrastructure récurrents pour ce project sont strictement de zéro franc burundais grâce à l'exploitation de services ou de tiers gratuits. Pour les utilisateurs finaux, le poids extrêmement compact de l'application (bundle < 250 Ko) engendre une consommation de données mobile insignifiante (inférieure à 1 Mo par consultation complète).
+[85] 3. Faisabilité Opérationnelle : L'ergonomie de l'interface a été épurée : navigation tactile immédiate depuis la carte d'accueil, bannières d'alerte aux codes couleurs (vert / ambre), formulation pragmatique de chaque avis débutant par un verbe d'action de terrain (« Protégez... », « Surveillez... », « Vérifiez... ») évitant les termes techniques potentiellement obscurs.
+[86] 4. Faisabilité Juridique, Éthique et Déontologique : Au Burundi, la délivrance des avis de vigilance officielle et les ordres d'alerte relèvent du monopole exclusif de l'IGEBU et de la Direction Générale de la Protection Civile. AgroMétéo Burundi se positionne explicitement comme un outil expérimental d'aide consultative. Dans l'ensemble du code source, les termes anxiogènes tels que « inondation certaine » ou « évacuation » sont formellement prohibés et remplacés par des consignes de vigilance ciblée (« vérifier l'état des diguettes »). De surcroît, le principe d'intégrité déontologique interdit formellement d'assimiler l'absence de données à une situation sans danger : toute donnée manquante génère le statut explicite 'non_evalue' avec une mise en garde formelle [5].
+[87] 6. Synthèse du Diagnostic
+[88] Le diagnostic approfondi confirme la pertinence et la faisabilité pleine et entière d'un système de veille agro-climatique au Burundi. En comblant le fossé entre les prévisions numériques globales et les décisions paysannes concrètes, AgroMétéo Burundi apporte une réponse logicielle pragmatique et économe en ressources. Les chapitres suivants détaillent les fondements théoriques, la modélisation conceptuelle, l'implémentation effective et la validation expérimentale de cette solution.
+[89] 
+[90] 
+[91] 
+[92] 
+[93] 
+[94] CHAPITRE II — ÉTUDE THÉORIQUE ET ÉTAT DE L'ART
+[95] 1. Architecture Client-Serveur 
+[96] Le génie logiciel contemporain privilégie le découpage des applications d'envergure en systèmes distribués modulaires où la couche de présentation graphique (le client) est strictement isolée de la couche de traitement des données et de logique métier (le serveur) [6]. Ce modèle Client-Serveur résout les limites des architectures monolithiques traditionnelles en permettant une évolution technologique indépendante de chaque sous-système, une scalabilité horizontale et une interopérabilité immédiate avec de futurs clients mobiles natifs ou passerelles USSD.
+[97] Dans le cadre de notre projet, ce paradigme est transcendé par l'adoption du patron de conception Backend-For-Frontend (BFF), popularisé par Sam Newman [7]. Contrairement à un schéma où le navigateur web dialoguerait directement en mode AJAX/Fetch avec les API du serveur backend, le patron BFF positionne le runtime serveur de SvelteKit (+page.server.js) comme un sas d'intermédiation sécurisé et optimisé entre le navigateur de l'agriculteur et l'API FastAPI :
+[98] Figure 2.1 — Diagramme architectural du patron Backend-For-Frontend (BFF)
+[99] Ce modèle d'architecture procure des bénéfices majeurs d'ingénierie :
+[100] Étanchéité cryptographique absolue : Les jetons d'authentification JWT sont stockés dans des cookies munis du drapeau HttpOnly. Le code JavaScript s'exécutant dans le navigateur ne peut jamais y accéder, ce qui neutralise à 100% les risques d'exfiltration de session par faille XSS (Cross-Site Scripting).
+[101] Élimination des verrous CORS : Puisque les appels vers le serveur FastAPI sont émis de serveur à serveur par Node.js / SvelteKit, le navigateur n'applique aucun blocage d'origine croisée (CORS), éliminant une source majeure de fragilité réseau lors des déploiements.
+[102] Optimisation de la bande passante mobile : Le BFF peut agréger plusieurs sources et formater la charge utile brute avant de la transmettre au composant d'interface, allégeant considérablement le travail de désérialisation sur les processeurs limités des smartphones d'entrée de gamme.
+[103] 2. Étude Comparative Approfondie des Frameworks Front-End
+[104] Le choix du framework d'interface utilisateur conditionne directement la vitesse d'affichage, la fluidité des interactions et la consommation énergétique sur terminal mobile. Quatre solutions majeures du marché ont été soumises à une évaluation multicritère rigoureuse :
+[105] Tableau 2.1 — Comparatif technique multidimensionnel des frameworks front-end
+[106] 
+[107] La supériorité de SvelteKit et de Svelte 5 dans le contexte burundais réside dans son modèle de compilation sans DOM virtuel. Tandis que React et Vue chargent une bibliothèque volumineuse dans le navigateur pour calculer en continu les différences en mémoire entre deux arbres virtuels d'éléments, le compilateur Svelte analyse le code à la compilation et génère du code JavaScript pur qui met directement à jour le nœud DOM concerné dès qu'une Rune ($state) est modifiée [8]. Ce gain de performance drastique préserve la batterie et la fluidité des smartphones modestes des moniteurs agricoles.
+[108] 3. Étude Comparative Approfondie des Frameworks Back-End
+[109] Le backend applicatif assume des responsabilités critiques : ingestion des flux météorologiques distants, extraction mathématique des séries temporelles, hachage cryptographique et évaluation sans faille du moteur de règles. Quatre technologies de référence ont été confrontées :
+[110] Tableau 2.2 — Comparatif technique des frameworks back-end d'ingénierie
+[111] 
+[112] L'adoption de FastAPI s'est imposée avec évidence : propulsé par Python 3.14 et le gestionnaire de paquets ultra-rapide uv, il allie les performances d'exécution des serveurs asynchrones modernes avec la richesse incomparable de l'écosystème scientifique Python indispensable pour manipuler les séries vectorielles d'Open-Meteo via Pandas [9].
+[113] 4. Persistance des Données : MongoDB Atlas & Cache SQLite vs PostgreSQL
+[114] La stratégie de stockage représente l'une des évolutions de conception les plus significatives du projet. L’analyse approfondie de la dynamique des flux de données a conduit à une architecture hybride beaucoup plus efficiente, combinant MongoDB Atlas (NoSQL) pour la persistance documentaire des utilisateurs et un cache local SQLite pour les prévisions météorologiques.
+[115] Tableau 2.3 — Comparaison critique des stratégies de persistance des données
+[116] 
+[117] 5. API REST, Protocoles et Formats d'Échange
+[118] La communication inter-composants s'appuie sur le standard architectural REST (Representational State Transfer) [10]. Les principes directeurs suivants ont été appliqués avec rigueur :
+[119] Adressage canonique des ressources : Chaque entité du domaine est désignée par un chemin d'URI explicite (/user pour les comptes, /token pour la session, /{location} pour les données spécifiques au territoire sélectionné ).
+[120] Sémantique HTTP standard : Usage sémantique strict des méthodes HTTP : GET pour la consultation de données sans effet de bord, POST pour la création de ressources utilisateur ou la négociation de jetons d’authentification.
+[121] Codes d'état HTTP univoques : Transmission de codes d'état normalisés guidant immédiatement le client : 200 (Succès), 400 (Requête invalide / mot de passe erroné), 401 (Non authentifié ou jeton expiré), 403 (Accès interdit), 404 (Localité inconnue) et 500 (Erreur interne).
+[122] Dualité des formats (JSON et FlatBuffers) : Les échanges entre le backend et le frontend SvelteKit s'opèrent au format standard JSON (JavaScript Object Notation), tandis que les échanges en amont avec les serveurs d'Open-Meteo exploitent le format binaire vectorisé FlatBuffers, qui élimine le surcoût de parsing textuel et autorise une vitesse de lecture jusqu'à 10 fois supérieure.
+[123] 6. Architecture de Sécurité et d'Authentification Avancée
+[124] Bien que le document de cadrage initial n'ait que succinctement abordé la sécurisation des accès, l'équipe d'ingénierie a fait le choix stratégique d'implémenter une infrastructure d'authentification robuste de qualité industrielle :
+[125] 6.1 Hachage Cryptographique des Mots de Passe via Argon2id
+[126] Les mots de passe des utilisateurs ne sont jamais stockés en clair. Ils sont protégés au moyen de l'algorithme **Argon2id** (version v=19), grand vainqueur de la prestigieuse *Password Hashing Competition* internationale [11]. Contrairement aux algorithmes vieillissants (MD5, SHA-1, SHA-256 purs) ou même à bcrypt, Argon2id est spécifiquement conçu pour résister aux attaques massives par force brute exécutées sur des circuits ASIC dédiés ou des fermes de GPU. Il impose un coût mémoire incompressible (m = 65 536 Ko, soit 64 Mo de RAM par opération de hachage), combiné à 3 itérations temporelles (t = 3) et 4 voies de parallélisme (p = 4).
+[127] 6.2 Neutralisation des Attaques Temporelles (Side-Channel Timing Attacks)
+[128] Une faille classique des systèmes d'authentification réside dans la vulnérabilité d'énumération par chronométrage réseau : si un identifiant saisi n'existe pas en base et que le serveur renvoie immédiatement une erreur sans exécuter l'algorithme de hachage, le temps de réponse (ex. 2 ms) est radicalement inférieur à celui d'une vérification de mot de passe erroné sur un compte existant (ex. 120 ms). Un attaquant peut ainsi cartographier l'ensemble des adresses emails enregistrées en mesurant la latence des réponses [12].
+[129] Pour parer définitivement cette vulnérabilité, le module app/core/security.py met en œuvre une défense en profondeur remarquable via un hachage factice de compensation (DUMMY_HASH) :
+[130] Extrait : app/core/security.py — Protection contre l'énumération par canal auxiliaire
+[131] 
+[132] 6.3 Jetons JSON Web Tokens (JWT) et Transport Sécurisé par Cookies HttpOnly
+[133] L'authentification est formalisée selon le standard **OAuth2 Password Bearer**. En cas de vérification positive des identifiants sur la route POST /token, le serveur délivre un jeton JWT signé avec l'algorithme cryptographique symétrique HMAC-SHA256 (HS256) adossé à une clé secrète robuste (SECRET_KEY). Le payload du jeton incorpore l'identifiant utilisateur ('sub': username) et sa date de péremption ('exp': timestamp UTC), fixée à 30 minutes (ACCESS_TOKEN_EXPIRE_MINUTES = 30) [13].
+[134] La persistance de cette session côté client fait l'objet d'un arbitrage sécuritaire fondamental : plutôt que de stocker le token dans le LocalStorage du navigateur (extrêmement vulnérable aux attaques par injection de script XSS), SvelteKit encapsule le jeton au sein d'un cookie configuré avec les attributs HttpOnly (inaccessible à l'API JavaScript Document.cookie), SameSite=Strict (neutralisant les requêtes falsifiées inter-sites CSRF) et une durée de vie calquée sur le jeton.
+[135] 7. Responsive Design et Accessibilité Numérique (WCAG 2.1)
+[136] L'ergonomie d'un outil d'aide à la décision agricole utilisé sur le terrain requiert une attention aiguë aux conditions d'usage en extérieur (forte luminosité solaire, manipulation d'une seule main, écrans de faible diagonale). Le projet applique les directives internationales d'accessibilité aux contenus web **WCAG 2.1 (Web Content Accessibility Guidelines)** édictées par le W3C, visant le niveau de conformité AA [14] :
+[137] Grille réactive fluide et adaptative : L'interface est structurée au moyen du moteur moderne **Tailwind CSS v4**. La grille d'affichage applique la méthodologie Mobile-First : agencement sur 1 colonne par défaut (grid-cols-1), basculant de manière fluide à 2 colonnes sur tablette (md:grid-cols-2) et 4 colonnes sur station de travail (lg:grid-cols-4).
+[138] Contraste visuel et lisibilité extérieure : Le thème sombre moderne (fond Slate-950 #020617, cartes Slate-900 #0F172A) est associé à des typographies d'un blanc pur ou gris très clair (Slate-100 / Slate-200), garantissant un ratio de contraste photométrique supérieur à 7:1, surpassant largement le seuil minimal de 4.5:1 exigé par la norme WCAG 2.1 AA pour une lisibilité parfaite en plein soleil.
+[139] Dimensions des cibles tactiles : Les boutons interactifs, onglets de sélection et marqueurs cartographiques respectent une surface tactile minimale de 44 × 44 pixels recommandée pour éviter les erreurs de manipulation tactile sur terminal mobile.
+[140] Accessibilité sémantique et navigation au clavier : La fenêtre modale d'inspection des mesures intègre les attributs d'accessibilité WAI-ARIA formels (role='dialog', aria-modal='true', aria-labelledby='modal-title'). La navigation au clavier est totalement prise en charge, avec fermeture instantanée de la boîte de dialogue par pression de la touche Échap (Escape) interceptée au niveau de la fenêtre globale.
+[141] 8. Synthèse de l'État de l'Art et Choix Retenus
+[142] L'étude théorique et comparative valide avec force la cohérence technologique de la solution AgroMétéo Burundi. En conjuguant la puissance asynchrone de FastAPI (Python 3.14), l'agilité documentaire de MongoDB Atlas, la réactivité sans DOM virtuel de Svelte 5 / SvelteKit 3 et une sécurité cryptographique de premier ordre (Argon2id / JWT), le système se dote d'une infrastructure moderne, légère et pérenne, parfaitement taillée pour relever les défis de la surveillance agro-météorologique en contexte burundais.
+[143] 
+[144] 
+[145] 
+[146] 
+[147] 
+[148] 
+[149] 
+[150] CHAPITRE III — CONCEPTION DE LA SOLUTION CIBLE
+[151] 1. Spécification des Exigences Fonctionnelles (EF-01 à EF-20)
+[152] La phase de conception débute par la formalisation rigoureuse des besoins en spécifications fonctionnelles numérotées et hiérarchisées selon la méthode de priorisation MoSCoW (Must have, Should have, Could have, Won't have) [15]. Chaque exigence est confrontée à son statut d'implémentation effectif dans la base de code :
+[153] Tableau 3.1 — Spécification formelle des exigences fonctionnelles (EF-01 à EF-20)
+[154] 
+[155] 2. Spécification des Exigences Non-Fonctionnelles (ENF-01 à ENF-10)
+[156] Les exigences non fonctionnelles établissent les critères qualitatifs de performance, robustesse, sécurité et ergonomie indispensables à l'acceptabilité opérationnelle du système :
+[157] Tableau 3.2 — Spécification formelle des exigences non fonctionnelles (ENF-01 à ENF-10)
+[158] 
+[159] 3. Architecture Applicative Globale et Séparation BFF
+[160] La solution cible est organisée selon une architecture en couches découpée en trois tiers fonctionnels distincts, articulée autour du patron Backend-For-Frontend (BFF) :
+[161] Figure 3.1 — Architecture logicielle globale en couches et interconnexions de données
+[162] 4. Modélisation UML Complète du Système
+[163] La modélisation de la solution cible est formalisée conformément aux standards de l'Unified Modeling Language (UML 2.5) [16]. Elle couvre les vues fonctionnelle, statique, dynamique et d'implémentation physique.
+[164] 4.1 Diagramme de Cas d'Utilisation (Use Case Diagram)
+[165] Le diagramme de cas d'utilisation capture les interactions entre les acteurs externes (l'Encadreur Agricole / Moniteur DPAE, le Gestionnaire de Coopérative, et le Système Météorologique Tiers) et les fonctionnalités du système :
+[166] Figure 3.2 — Diagramme de cas d'utilisation du système AgroMétéo Burundi
+[167] 4.2 Diagramme de Classes Métier (Class Diagram)
+[168] Le diagramme de classes illustre les structures de données, les schémas de transfert Pydantic et la séparation entre les modèles de persistance et les composants de logique pure :
+[169] Figure 3.3 — Diagramme de classes métier du backend AgroMétéo Burundi
+[170] Tableau 3.3 — Description des classes et modules logiciels métier
+[171] 
+[172] 4.3 Diagramme de Composants (Component Diagram)
+[173] Le diagramme de composants matérialise les frontières physiques et modulaires entre les packages logiciels :
+[174] Figure 3.4 — Diagramme de composants logiciels du système
+[175] 4.4 Diagrammes de Séquence (Sequence Diagrams)
+[176] Les diagrammes de séquence détaillent la chronologie des messages échangés lors des deux cas d'usage majeurs du système.
+[177] Séquence 1 : Authentification Sécurisée et Émission du Cookie de Session
+[178] Figure 3.5 — Diagramme de séquence de l'authentification OAuth2 / JWT
+[179] Séquence 2 : Consultation d'un Bulletin Régional et Évaluation du Moteur Pur
+[180] Figure 3.6 — Diagramme de séquence de la consultation d'un bulletin agro-météorologique
+[181] 4.5 Diagramme d'États-Transitions des Avis de Vigilance (State Machine Diagram)
+[182] Chaque conseil agro-climatique évolue selon une machine à états finis déterministe garantissant une intégrité déontologique absolue face aux imprévus de données :
+[183] Figure 3.7 — Diagramme d'états-transitions du moteur de vigilance agricole
+[184] 4.6 Diagramme de Déploiement Physique (Deployment Diagram)
+[185] Le diagramme de déploiement spécifie l'allocation des artefacts logiciels sur les nœuds matériels d'exécution :
+[186] Figure 3.8 — Diagramme de déploiement physique de l'architecture distribuée
+[187] 5. Modélisation des Données et Schémas Physiques
+[188] La persistance des données au sein du système repose sur une stricte séparation entre les données d'identité et les séries temporelles transitoires :
+[189] 5.1 Schéma de la Collection MongoDB 'users'
+[190] Les comptes utilisateurs sont stockés sous forme de documents BSON structurés dans la base 'weather-app' :
+[191] Extrait : Schéma documentaire BSON — Collection MongoDB 'users'
+[192] 
+[193] 5.2 Schéma de la Table de Cache SQLite (.cache.sqlite)
+[194] La bibliothèque `requests-cache` gère un fichier SQLite local `.cache.sqlite` contenant deux tables internes : `responses` (stockant la charge utile binaire compressée de la réponse HTTP, les en-têtes et la date d'expiration) et `redirects` (résolution des redirections d'URL). Le TTL configuré à 3 600 secondes garantit que toute requête identique émise au cours de l'heure est servie directement depuis le disque local en moins de 5 millisecondes.
+[195] 6. Moteur de Règles Métier et Formalisation Algorithmique
+[196] Le cœur décisionnel du projet est implanté de façon pure dans `app/services/measures.py` et `app/services/advice.py`. Il traduit avec rigueur les seuils de vigilance officiels de l'IGEBU [17] et les directives culturales de l'ISABU [18].
+[197] 6.1 Formalisation Mathématique des Règles Métier
+[198] 1. Règle de Pluie Critique sur 24 heures (Toutes cultures, avec conseil renforcé pour le Maïs) :
+Soit P_24h le cumul horaire des précipitations prévu sur l'intervalle temporel ouvert à gauche (t0, t0 + 24h] :
+P_24h = Somme de i=1 à 24 de p(t0 + i heures)
+La condition de déclenchement s'énonce :
+P_24h >= S_24h où S_24h = 50.0 mm si Zone = Plaine, et S_24h = 100.0 mm si Zone = Montagne.
+Directive pour le Maïs : « Si vous faites sécher du maïs en plein air, prévoyez de le mettre à l'abri ou de le couvrir avant les pluies annoncées. Vérifiez les fossés et les accès autour des aires de séchage. »
+[199] 2. Règle de Pluie Prolongée sur 72 heures (Haricot, Manioc, Patate douce, Pomme de terre) :
+Soit P_72h = Somme de i=1 à 72 de p(t0 + i heures).
+La condition de déclenchement s'énonce :
+P_72h >= S_72h où S_72h = 60.0 mm si Plaine, et S_72h = 90.0 mm si Montagne.
+Directive opérationnelle : « Après des pluies prolongées, vérifiez l'apparition de rigoles ou de ravinements et l'évacuation de l'eau autour des parcelles. » (Ajout spécifique pour la patate douce : « Vérifiez aussi l'état des buttes. »)
+[200] 3. Règle de Saturation Hydrique des Sols sur les 7 Jours Écoulés :
+Soit P_7j_passes = Somme de j=1 à 168 de p(t0 - j heures).
+Condition de déclenchement : P_7j_passes >= 50.0 mm.
+Rôle agronomique : avertir que la réserve utile du sol est saturée et que toute nouvelle pluie entraînera une asphyxie racinaire.
+[201] 4. Règle de Vent Violent et Rafales (Bananier et Maïs) :
+Soit V_rafales = Max de i=1 à 24 de vent_rafale(t0 + i heures).
+Condition de déclenchement : V_rafales >= 40.0 km/h.
+Directive pour le Bananier : « Vérifiez les plants exposés au vent. Si des brise-vent existent, contrôlez leur état ; les régimes proches de la maturité peuvent être plus vulnérables à la chute. »
+[202] 5. Règle de Crue Hydrologique et Débit Anormal pour le Riz de Bas-fond :
+Soit Q_prevu le débit maximal prévu sur 7 jours via GloFAS, et Q_ref_p75 le 75e percentile des débits des 31 derniers jours.
+Condition de déclenchement : Q_prevu > Q_ref_p75.
+Directive opérationnelle : « Le débit prévu est inhabituel pour ce point à cette période. Vérifiez les diguettes, les canaux et les accès du bas-fond. Une pluie normale n'est pas un problème pour le riz, mais un débit inhabituel justifie une vérification locale. »
+[203] 6. Règle de Période Sèche Prolongée (Toutes cultures) :
+Soit N_jours_secs le nombre de jours consécutifs où la pluie sur 24h est inférieure à 2.0 mm.
+Condition de déclenchement : N_jours_secs >= 5 jours.
+Directive : « Période sèche annoncée : surveillez l'état des cultures et vérifiez localement la disponibilité en eau. »
+[204] 6.2 Matrice ISABU des Cultures Prévalentes par Région
+[205] L'application adapte dynamiquement les avis en fonction du catalogue des cultures dominantes de la zone :
+[206] • Bujumbura Mairie : riz, maïs, manioc, bananier.
+[207] • Bujumbura Rural (Imbo) : riz, maïs, manioc, bananier.
+[208] • Bujumbura Rural (Mumirwa) : bananier, maïs, haricot, manioc, pomme de terre.
+[209] • Gitega : maïs, haricot, bananier, riz, patate douce, pomme de terre.
+[210] • Karusi : maïs, haricot, bananier, manioc, patate douce.
+[211] • Rutana : riz, maïs, haricot, manioc, bananier.
+[212] 7. Planification Agile Scrum sur Deux Semaines (W1–W2)
+[213] Le projet a été exécuté selon la méthode Agile Scrum condensée sur un cycle ferme de dix jours ouvrés (deux semaines) [19] :
+[214] Tableau 3.4 — Planification Scrum et exécution des sprints sur 10 jours ouvrés
+[215] 
+[216] 8. Synthèse de la Conception
+[217] La conception de la solution AgroMétéo Burundi aboutit à une architecture modulaire hautement formalisée. Grâce à des exigences clairement quantifiées (EF et ENF), une modélisation UML exhaustive, des schémas de données légers et un moteur de règles fonctionnel pur d'une rigueur absolue, le système dispose d'une assise solide pour la réalisation technique détaillée au chapitre suivant.
+[218] CHAPITRE IV — IMPLÉMENTATION ET RÉALISATION
+[219] 1. Environnement de Développement et Outillage Technique
+[220] La concrétisation logicielle du projet AgroMétéo Burundi s'est appuyée sur un environnement technique moderne, hautement performant et rigoureusement configuré. L'équipe a tiré parti des avancées les plus récentes des écosystèmes Python et JavaScript pour garantir une rapidité de développement optimale et une maintenabilité pérenne :
+[221] Tableau 4.1 — Matrice de l'environnement technologique et outillage de développement
+[222] 
+[223] 2. Implémentation du Backend `weather-backend`
+[224] Le répertoire `weather-backend` matérialise l'API REST asynchrone et le moteur décisionnel pur. L'arborescence du projet adopte une séparation stricte des responsabilités :
+[225] Figure 4.1 — Structure modulaire de la base de code du backend FastAPI
+[226] 2.1 Implémentation des Contrôleurs et Routes FastAPI
+[227] Le point d'entrée `app/main.py` instancie l'application ASGI FastAPI et inclut les trois routeurs sans préfixe superflu :
+[228] Route POST /token (app/routes/token.py) : Reçoit les requêtes au format standard application/x-www-form-urlencoded via OAuth2PasswordRequestForm. Appelle security.authenticate_user(). En cas de succès, génère un jeton JWT valide 30 minutes contenant l'identifiant ('sub': username) et renvoie le schéma JSON { 'access_token': ..., 'token_type': 'bearer' }. En cas d'échec, renvoie une exception HTTP 401 Unauthorized après avoir exécuté le hachage fictif de compensation anti-timing.
+[229] Route POST /user (app/routes/user.py) : Reçoit le schéma NewUser (nom, email, mot de passe). Hache le mot de passe en Argon2id et insère le document BSON dans la collection 'users' de MongoDB Atlas. Renvoie le schéma public User sans exposer le mot de passe haché.
+[230] Route GET /{location} (app/routes/weather.py) : Exige obligatoirement la dépendance de sécurité token: Annotated[User, Depends(security.get_current_user)]. Valide l'identifiant territorial via l'enum Location. Récupère les coordonnées géographiques associées, lance les requêtes asynchrones Open-Meteo et GloFAS, extrait les cumuls temporels via measures.py, évalue les conseils agricoles via advice.py et renvoie un payload JSON consolidé contenant les prévisions horaires, les relevés de crues et le tableau des conseils.
+[231] 2.2 Client Réseau Résilient et Mise en Cache SQLite (app/services/weather.py)
+[232] La communication avec les serveurs d'Open-Meteo est blindée contre les aléas de connectivité grâce à la combinaison de `requests-cache` et `retry-requests` :
+[233] Extrait : app/services/weather.py — Client HTTP résilient avec cache local SQLite
+[234] 
+[235] 2.3 Moteur d'Agrégation Temporelle Pure (app/services/measures.py)
+[236] Le module `measures.py` résout la complexité de l'alignement temporel des séries horaires météorologiques. Il respecte la convention physique d'Open-Meteo où la valeur enregistrée à l'heure T correspond au cumul tombé sur l'intervalle écoulé (T - 1h, T]. Le calcul des cumuls glissants s'effectue sur des fenêtres semi-ouvertes :
+[237] • pluie_24h : somme des 24 pas de temps horaires sur l'intervalle (t0, t0 + 24h].
+[238] • pluie_72h : somme des 72 pas de temps horaires sur l'intervalle (t0, t0 + 72h].
+[239] • pluie_7j_passes : somme des 168 pas de temps passés sur (t0 - 168h, t0].
+[240] • jours_secs : décompte des blocs successifs de 24h dont le cumul pluviométrique est strictement inférieur à 2,0 mm.
+[241] • rafales_kmh : valeur maximale des rafales de vent anticipées sur les 24 prochaines heures.
+[242] • Garde-fou d'intégrité : si la fenêtre temporelle est incomplète ou contient une valeur manquante (NaN / None), la fonction refuse d'interpoler et renvoie None, neutralisant tout risque de faux avis.
+[243] 2.4 Moteur Décisionnel Pur et Éthique des Messages (app/services/advice.py)
+[244] Le fichier `advice.py` implémente les règles de décision agricole sans aucun effet de bord. Voici un extrait significatif illustrant l'application des règles pour la culture du riz et les garanties déontologiques :
+[245] Extrait : app/services/advice.py — Logique métier pour la riziculture en bas-fond
+[246] 
+[247] 3. Implémentation du Frontend SvelteKit `weather-app`
+[248] L'application client `weather-app` exploite la dernière génération du framework web Svelte (Svelte 5) en activant systématiquement les Runes. L'interface se caractérise par une réactivité instantanée et une ergonomie raffinée :
+[249] Figure 4.2 — Structure modulaire du frontend SvelteKit
+[250] 3.1 Composant Cartographique Interactif (src/lib/components/Leaflet.svelte)
+[251] La carte interactive s'appuie sur le wrapper `sveaflet` enveloppant la bibliothèque Leaflet 1.9.4. Elle positionne six marqueurs géographiques précis matérialisant les cinq provinces et les deux sous-zones de Bujumbura Rural :
+[252] 1. Gitega (lat: -3.42708, long: 29.92463) : Hautes terres centrales, capitale politique.
+[253] 2. Karusi (lat: -3.10139, long: 30.16278) : Centre-Est, bassin fluvial de la Ruvubu.
+[254] 3. Bujumbura Mairie (lat: -3.38193, long: 29.36142) : Plaine de l'Imbo et littoral du Tanganyika.
+[255] 4. Rutana (lat: -3.92790, long: 29.99200) : Sud-Est et dépression agricole du Kumoso.
+[256] 5. Bujumbura Rural - Imbo (lat: -3.45000, long: 29.32000) : Plaine côtière basse altitude (< 1 000 m).
+[257] 6. Bujumbura Rural - Mumirwa (lat: -3.51220, long: 29.37150) : Contreforts escarpés (> 1 350 m).
+[258] Chaque marqueur ouvre une infobulle (popup) au clic affichant l'appellation de la station, son sous-titre agro-écologique et un bouton d'action fluide 'Voir météo & conseils →' naviguant vers la route dynamique `/region/[slug]`.
+[259] 3.2 Visualisation Vectorielle Temporelle (svelteplot) et Filtrage des Avis
+[260] Sur la page de détail `/region/[slug]`, le composant exploite `svelteplot` pour restituer les séries temporelles de prévisions horaires sur 7 jours. L'utilisateur bascule entre 4 grandeurs physiques :
+[261] • Température (°C) : courbe ambrée (#f59e0b) avec zone ombrée semi-transparente.
+[262] • Précipitations (mm) : courbe bleu ciel (#38bdf8) illustrant l'intensité des averses.
+[263] • Probabilité de pluie (%) : courbe indigo (#818cf8) exprimant le niveau de certitude.
+[264] • Vitesse du vent (km/h) : courbe verte émeraude (#34d399) avec surbrillance des rafales.
+[265] Le survol du graphique déclenche un composant `<Pointer>` qui projette une mire en croix (`RuleX`, `RuleY`), un point de capture (`Dot`) et une infobulle textuelle indiquant la date et l'heure UTC exacte ainsi que la valeur mesurée. Sous les graphiques, les cartes d'avis agricoles sont filtrées en temps réel par culture et par niveau de sévérité sans aucun rechargement de page, illustrant la puissance de la Rune réactive `$derived`.
+[266] 3.3 Modale d'Inspection des Mesures et Limitations
+[267] Chaque carte de conseil comporte un bouton 'Mesures & limitations' ouvrant une boîte de dialogue modale accessible. Cette fenêtre affiche des jauges de progression colorimétriques comparant la prévision aux seuils critiques (bleu < 75%, ambre entre 75% et 100%, rose vif ≥ 100%), garantissant une transparence scientifique absolue vis-à-vis des utilisateurs.
+[268] 4. Gestion de Version Git, Dépendances et Documentation
+[269] La gestion des dépendances est verrouillée de manière reproductible au bit près via `uv.lock` côté Python et `package-lock.json` côté Node.js. L'API backend est documentée interactivement via les interfaces auto-générées Swagger UI (`/docs`) et ReDoc (`/redoc`). Le dépôt Git de `weather-backend` a été initialisé sur la branche principale master avec un fichier .gitignore standard excluant les caches locaux, les fichiers d'environnement (.env) et les artefacts compilés.
+[270] 5. Synthèse de la Réalisation
+[271] L'implémentation logicielle d'AgroMétéo Burundi démontre une maîtrise remarquable des standards de développement actuels. En mariant la réactivité sans DOM virtuel de Svelte 5 aux performances asynchrones et à la rigueur mathématique de FastAPI, la plateforme offre un niveau d'achèvement exceptionnel, entièrement opérationnel et prêt pour l'évaluation expérimentale développée au Chapitre V.
+[272] CHAPITRE V — TESTS, VALIDATION ET ÉVALUATION
+[273] 1. Méthodologie d'Assurance Qualité et Stratégie de Test
+[274] L'assurance qualité logicielle du projet AgroMétéo Burundi a été articulée selon une démarche d'ingénierie rigoureuse inspirée de la pyramide des tests de Mike Cohn [20]. Compte tenu des contraintes temporelles d'un cycle de deux semaines, les efforts de test automatisé ont été concentrés prioritairement sur le socle algorithmique décisionnel (moteur pur sans état), complétés par des validations de compilation statique, de linting et des tests d'intégration d'API :
+[275] 1. Tests Unitaires Purs (Backend) : Couverture systématique et automatisée de toutes les branches logiques de measures.py et advice.py via la suite pytest. Les tests s'exécutent de manière totalement découplée du réseau à l'aide de jeux de données synthétiques vectorisés.
+[276] 2. Tests d'Intégration d'API : Validation de la conformité des schémas Pydantic, de la génération des jetons JWT et du bon fonctionnement du cache SQLite lors des simulations d'interruption réseau.
+[277] 3. Tests de Compilation et Linting (Frontend) : Contrôle strict des règles de formatage et de typage via ESLint 10 et Prettier 3, suivi d'une compilation de production complète par Vite 8 validant l'absence de toute erreur de syntaxe ou d'importation manquante.
+[278] 4. Tests d'Interface et d'Utilisabilité : Vérification manuelle et instrumentée des parcours utilisateurs sur une variété de résolutions d'écran (smartphone, tablette, PC) et audit des contrastes et de l'accessibilité au clavier (normes WCAG 2.1 AA).
+[279] 2. Revue Exhaustive des Tests Automatisés Backend (pytest)
+[280] L'exécution de la suite de tests automatisés via la commande `.venv\Scripts\pytest -v` atteste d'un taux de succès de **100 % sur l'intégralité des 31 tests unitaires** en un temps d'exécution remarquable de 7,59 secondes :
+[281] Tableau 5.1 — Registre exhaustif des 31 tests unitaires validés sous pytest (100% succès)
+[282] 
+[283] 3. Tests et Validation du Frontend SvelteKit
+[284] La validation de l'interface utilisateur s'est opérée en trois étapes complémentaires : l'analyse statique du code, le test de compilation de production et l'audit de performance des bundles générés :
+[285] 1. Analyse Statique et Formatage : L'exécution de npm run lint a validé l'ensemble des fichiers JavaScript et composants Svelte au regard des configurations ESLint 10 et Prettier 3 sans aucune erreur de syntaxe ni d'anti-patron réactif.
+[286] 2. Test de Compilation de Production (Vite 8) : La commande npm run build (propulsée par Vite 8.3.0) s'est achevée avec un code de retour de zéro (exit code 0). Le compilateur a transformé avec succès 1 163 modules pour l'environnement client en 8,42 secondes et 443 modules pour le runtime serveur SSR en 12,50 secondes, attestant de l'intégrité absolue de l'arbre des dépendances.
+[287] 3. Analyse du Poids des Artefacts de Production : L'optimisation des bundles générés confirme la remarquable compacité de l'application : le bundle racine du layout pèse 47,70 Ko (CSS : 8,19 Ko gzippé) ; la page d'accueil cartographique (Leaflet) pèse 168,09 Ko (53,54 Ko gzippé) ; la page de détail régional (Svelteplot) pèse 286,55 Ko (94,06 Ko gzippé). Ces métriques respectent scrupuleusement l'exigence ENF-07 fixant un plafond de 250 Ko gzippé.
+[288] 4. Tests d'Interface, Compatibilité Responsive et Accessibilité (WCAG 2.1)
+[289] La compatibilité multi-appareils a été éprouvée sur émulateurs de résolutions représentatives du parc burundais :
+[290] Sur Smartphone (360 × 640 px et 412 × 915 px) : L'ensemble de l'interface se réorganise sur une seule colonne fluide. La hauteur de la carte Leaflet est ajustée à 540 px, les graphiques svelteplot s'adaptent à la largeur de l'écran avec tooltips tactiles au toucher et le menu de navigation propose des boutons tactiles largement espacés (≥ 44 px).
+[291] Sur Tablette (768 × 1024 px) : L'agencement bascule en grille à 2 colonnes permettant la consultation conjointe des indicateurs clés et des fiches d'avis.
+[292] Sur Ordinateur de Bureau (1920 × 1080 px) : L'agencement en 4 colonnes met en valeur la carte interactive sur 3/4 de la largeur avec le panneau de sélection provincial sur 1/4.
+[293] L'audit d'accessibilité confirme la conformité au niveau AA du standard WCAG 2.1 : les contrastes textuels sur fond sombre dépassent 7:1, la modale d'inspection piège le focus et se ferme instantanément à la touche Échap, et tous les champs de formulaires possèdent des étiquettes associées (label for / id) [14].
+[294] 5. Évaluation de l'Utilisabilité et des Performances
+[295] L'évaluation des temps de réponse a mis en évidence l'efficacité spectaculaire de l'architecture de mise en cache SQLite :
+[296] Performance avec Cache Actif (Cache HIT) : Lors d'une requête portant sur une zone dont les données sont en cache (validité de 3 600 secondes), le serveur FastAPI extrait les séries temporelles locales et évalue les conseils en moins de 15 millisecondes. Le rendu complet de la page SvelteKit s'effectue en moins de 80 millisecondes.
+[297] Performance lors du Rafraîchissement Externe (Cache MISS) : Lors de la première interrogation nécessitant la récupération des flux distants auprès d'Open-Meteo et de GloFAS, le temps de réponse total s'établit entre 1,1 et 1,4 seconde, ce qui demeure très inférieur au seuil de tolérance de 2 secondes.
+[298] 6. Comparaison Détaillée et Critique entre le Document de Cadrage MVP et l'Implémentation Réelle
+[299] Cette section constitue l'analyse critique fondamentale demandée par l'Université Polytechnique de Gitega. Elle confronte avec une rigueur absolue les prévisions théoriques du document de cadrage fondateur (version révisée du 11 octobre 2026) à la réalité effective du code source déployé dans weather-backend et weather-app [5] :
+[300] Tableau 5.2 — Matrice comparative exhaustive : Cadrage MVP initial vs Implémentation réelle
+[301] 
+[302] 6.1 Justification Technique Approfondie des Écarts Majeurs
+[303] 1. La Substitution de PostgreSQL par MongoDB Atlas et le Cache SQLite :
+Dans une démarche d'ingénierie rigoureuse, l'équipe a analysé la typologie des données manipuler : les prévisions météo sont des données à très courte durée de vie (quelques heures). Imposer un schéma SQL avec tables relationnelles, clés étrangères et migrations Alembic aurait alourdi inutilement le développement et mobilisé un serveur permanent coûteux. En déléguant la gestion des comptes utilisateurs à MongoDB Atlas (Tier M0 gratuit et managé) et la persistance des requêtes météo à un cache SQLite local ultra-rapide (requests-cache), le projet a atteint une efficacité maximale sans aucune dette financière.
+[304] 2. Le Retrait Assumé de NASA LHASA au Nom de la Déontologie Scientifique :
+Le modèle mondial de glissements de terrain NASA LHASA repose sur une maille satellitaire grossière. Les versants de Mumirwa et de la crête Congo-Nil présentent des micro-variations de pente et de texture pédologique sur quelques mètres. Afficher une alerte de glissement non résolue sur une province entière aurait induit les populations en erreur ou semé une panique injustifiée. Les ingénieurs ont appliqué le principe de responsabilité déontologique en retirant ce module tant qu'un modèle numérique de terrain (MNT) à haute résolution (< 30 m) et des capteurs locaux ne seront pas intégrés.
+[305] 3. L'Introduction d'une Sécurité Industrielle Supérieure aux Attentes :
+L'implémentation effective d'Argon2id avec coût mémoire de 64 Mo et la parade anti-timing attack (DUMMY_HASH) élève le prototype au rang d'application prête pour la production, témoignant d'une maturité d'ingénierie remarquable pour un projet de fin d'études.
+[306] 7. Synthèse de l'Évaluation
+[307] L'évaluation globale démontre que les écarts constatés entre le document de cadrage initial et l'implémentation réelle ne constituent pas des renoncements, mais des **décisions d'ingénierie rationnelles, matures et parfaitement justifiées**. Le prototype logiciel résultant dépasse largement les attentes du cadrage en termes de sécurité, de performance mobile et de pertinence agronomique territoriale.
+[308] CONCLUSION GÉNÉRALE ET PERSPECTIVES
+[309] 1. Bilan Synthétique au Regard de la Problématique et des Objectifs
+[310] Le présent travail d'ingénierie logicielle s'est attaqué à un défi vital pour la sécurité alimentaire et la résilience climatique de la République du Burundi : concevoir une passerelle technologique automatisée capable de convertir des flux numériques massifs de prévisions météorologiques et hydrologiques globales en directives d'action agronomiques immédiatement compréhensibles et exploitables par les encadreurs agricoles et les producteurs vivriers. Au terme de ce projet, les quatre questions de recherche et d'ingénierie formulées dans l'Introduction Générale ont reçu des réponses concrètes et validées expérimentalement :
+[311] Réponse à la Question 1 (Ingénierie des données) : La mise en œuvre conjointe du client binaire FlatBuffers openmeteo-requests et de la bibliothèque requests-cache adossée à une base locale SQLite (.cache.sqlite) a démontré qu'il est possible de collecter et de synchroniser des données horaires sur 14 jours (7 passés et 7 futurs) avec un temps de réponse inférieur à 15 ms en cache et une résilience prouvée face à 5 coupures simulées, sans exiger de serveur de base de données relationnelle lourd et coûteux.
+[312] Réponse à la Question 2 (Modélisation métier et agronomie) : Le découpage modulaire du moteur pur (measures.py et advice.py) a permis de formaliser les seuils officiels de l'IGEBU (50 mm en plaine, 100 mm en montagne) et les fiches culturales de l'ISABU sous forme de fonctions pures sans effet de bord, validées par 31 tests unitaires pytest avec 100% de succès. Le système neutralise toute donnée manquante ou corrompue (NaN) en basculant vers le statut déontologique explicite 'non_evalue'.
+[313] Réponse à la Question 3 (Architecture logicielle et performance) : Le mariage architectural entre le framework asynchrone FastAPI (ASGI) propulsé par Python 3.14 et le framework Svelte 5 / SvelteKit 3 fonctionnant en mode Runes (sans DOM virtuel) offre une vélocité remarquable sur terminal mobile. Grâce au patron Backend-For-Frontend (BFF), le bundle initial reste inférieur à 250 Ko gzippé et le premier affichage s'exécute en moins de 1,2 seconde sur réseau 3G rural.
+[314] Réponse à la Question 4 (Déontologie sociotechnique) : Le système a établi une déontologie institutionnelle irréprochable en bannissant tout terme anxiogène ('évacuation', 'inondation certaine') et en cantonnant explicitement l'outil à un rôle de conseil consultatif collinaire, préservant scrupuleusement les prérogatives régaliennes exclusives de l'IGEBU et de la Protection Civile.
+[315] L'ensemble des cinq objectifs spécifiques chiffrés (OS1 à OS5) détaillés au Tableau 0.1 a été pleinement atteint, faisant d'AgroMétéo Burundi un prototype universitaire fonctionnel d'une grande valeur opérationnelle.
+[316] 2. Limites Actuelles du Prototype
+[317] En dépit de son haut niveau d'achèvement technique pour un cycle condensé de deux semaines, le prototype souffre de plusieurs limites objectives qui constituent autant de chantiers pour la suite du projet :
+[318] 1. Dépendance exclusive vis-à-vis des modèles globaux : Les prévisions actuelles dépendent exclusivement des modèles numériques mondiaux (ECMWF, GFS). Bien que très performants, ces modèles ne sont pas encore recalibrés en temps réel par les observations des stations physiques au sol de l'IGEBU.
+[319] 2. Couverture territoriale partielle : Le déploiement actuel couvre 5 provinces représentatives (Bujumbura Mairie, Bujumbura Rural, Gitega, Karusi, Rutana). Les 13 autres provinces du pays (notamment le grand nord agricole de Ngozi, Kayanza et Kirundo) ne sont pas encore intégrées dans l'interface.
+[320] 3. Exclusion temporaire des exploitants non connectés : Le système est conçu sous forme d'application web réactive. Or, une fraction substantielle des petits producteurs agricoles burundais en milieu rural reculé ne possède pas de smartphone et ne dispose pas d'abonnement Internet mobile.
+[321] 4. Chantiers d'ingénierie résiduels (Conteneurisation et Git) : Le déploiement s'opère en environnement local via uv et Vite. L'absence de fichiers de conteneurisation multi-stage (Dockerfile, docker-compose.yml) et l'absence de commits finaux sur la branche master de Git constituent une dette technique à solder avant l'industrialisation.
+[322] 3. Perspectives d'Évolution pour la Deuxième Année (Section 9 du Cadrage)
+[323] Conformément à la feuille de route pluriannuelle définie dans la Section 9 du document de cadrage initial [5], six axes d'approfondissement majeurs sont programmés pour la deuxième année du cycle d'ingénierie :
+[324] Perspective 1 : Passerelle Multicanale sans Internet (SMS / USSD) en Kirundi
+[325] Pour briser définitivement la fracture numérique, l'équipe développera un microservice passerelle connecté aux API des opérateurs de télécommunications nationaux (Lumitel, Econet Leo). Ce service permettra à tout agriculteur équipé d'un téléphone mobile basique 2G (feature phone) de composer un code USSD (ex. *185#) ou d'envoyer un SMS court avec le nom de sa colline pour recevoir instantanément en langue nationale Kirundi l'avis agricole du jour (ex. « Nimba uriko uranika ibigori, birinde imvura yimirije kugwa »).
+[326] Perspective 2 : Déploiement d'un Réseau de Stations Agro-Météorologiques IoT Locales
+[327] Le projet envisage la conception de stations météo connectées low-cost à base de microcontrôleurs ESP32 ou micro-ordinateurs Raspberry Pi, équipées de capteurs de pluie à auget basculeur, d'anémomètres et de sondes d'humidité du sol capacitives, transmettant leurs mesures via le protocole radio longue portée LoRaWAN vers le serveur FastAPI pour étalonner les prévisions Open-Meteo.
+[328] Perspective 3 : Extension Territoriale aux 18 Provinces et Nouvelles Super-Provinces
+[329] Le catalogue des zones d'observation sera étendu pour intégrer la totalité des 18 anciennes provinces administratives et s'adapter au nouveau découpage territorial du Burundi en 5 super-provinces (Bujumbura, Burunga, Butanyerera, Gitega, Buhumuza), en affinant les coordonnées géographiques au niveau de chaque chef-lieu communal.
+[330] Perspective 4 : Descente d'Échelle par Intelligence Artificielle (Machine Learning / LSTM)
+[331] L'équipe développera des modèles d'apprentissage automatique supervisé (Random Forest Regressor et réseaux de neurones récurrents LSTM / Bi-LSTM) entraînés sur les séries historiques pour réaliser un downscaling statistique des prévisions globales, en apprenant les biais orographiques locaux créés par les micro-reliefs collinaires burundais.
+[332] Perspective 5 : Collecte Participative Citoyenne (Crowdsourcing Agro-Climatique)
+[333] L'application intégrera un module de remontée d'incidents permettant aux agronomes communaux et chefs de collines de photographier et géolocaliser des sinistres réels (débordement d'un ravin, chute de grêle, début d'érosion). Ces observations empiriques alimenteront une base de vérité terrain pour recalibrer dynamiquement les seuils de vigilance.
+[334] Perspective 6 : Réintroduction d'un Modèle de Glissements Haute Résolution
+[335] En couplant les données altimétriques haute résolution du Modèle Numérique de Terrain (Copernicus DEM à 30 mètres) avec des cartes de pente fines et les données satellitaires d'humidité des sols (NASA SMAP / Sentinel-1), le module de sensibilité aux glissements de terrain sera réintroduit sur des bases scientifiques inattaquables, sans risque de fausses alertes.
+[336] 
+[337] ANNEXE A — DIAGRAMMES UML STRUCTURÉS ET DÉTAILLÉS
+[338] La présente annexe regroupe les spécifications tabulaires exhaustives des diagrammes UML de modélisation logicielle du système AgroMétéo Burundi, complétant les représentations graphiques présentées au Chapitre III.
+[339] A.1 Matrice Détaillée des Cas d'Utilisation
+[340] Tableau A.1 — Spécification tabulaire détaillée des cas d'utilisation
+[341] 
+[342] A.2 Dictionnaire des Événements et Transitions d'États
+[343] Tableau A.2 — Dictionnaire formel des transitions de la machine à états de vigilance
+[344] 
+[345] ANNEXE B — SCHÉMA D'ARCHITECTURE DE LA BASE DE DONNÉES
+[346] Cette annexe documente les spécifications techniques de la base de données NoSQL documentaire MongoDB Atlas ainsi que la structure physique de la base de données locale de mise en cache SQLite.
+[347] B.1 Spécification de la Collection MongoDB 'users'
+[348] Tableau B.1 — Dictionnaire des données de la collection MongoDB 'users'
+[349] 
+[350] B.2 Spécification des Tables de Cache SQLite (.cache.sqlite)
+[351] Tableau B.2 — Schéma physique des tables du cache local SQLite
+[352] 
+[353] ANNEXE D — MANUEL D'INSTALLATION, DE CONFIGURATION ET D'UTILISATION
+[354] Ce guide pas à pas fournit l'ensemble des instructions nécessaires au déploiement, à l'initialisation et à l'exploitation des deux applications composant la solution AgroMétéo Burundi.
+[355] D.1 Prérequis Système
+[356] • Système d'exploitation : Linux (Ubuntu 22.04+), macOS ou Windows 10/11.
+[357] • Gestionnaire Python : uv (version >= 0.11.0) ou Python 3.14.
+[358] • Runtime JavaScript : Node.js (version 22 LTS ou supérieure) et npm (>= 10.0).
+[359] • Accès Internet pour le premier téléchargement des dépendances et flux météorologiques.
+[360] D.2 Installation et Lancement du Backend (weather-backend)
+[361] 1. Accéder au répertoire du backend dans un terminal :
+[362] Extrait : Navigation vers le backend
+[363] 
+[364] 2. Configurer le fichier de variables d'environnement (.env) :
+[365] Extrait : Fichier de configuration .env du backend
+[366] 
+[367] 3. Installer les dépendances et exécuter les tests unitaires via uv :
+[368] Extrait : Synchronisation des dépendances et exécution des 31 tests
+[369] 
+[370] 4. Démarrer le serveur ASGI FastAPI :
+[371] Extrait : Lancement du serveur backend
+[372] 
+[373] Le backend écoute sur http://localhost:8000. La documentation Swagger interactive est accessible sur http://localhost:8000/docs.
+[374] D.3 Installation et Lancement du Frontend (weather-app)
+[375] 1. Ouvrir un second terminal et accéder au répertoire du frontend :
+[376] Extrait : Navigation vers le frontend
+[377] 
+[378] 2. Configurer le fichier d'environnement (.env) :
+[379] Extrait : Configuration de l'URL du backend
+[380] 
+[381] 3. Installer les dépendances Node.js et lancer le serveur de développement Vite :
+[382] Extrait : Démarrage du frontend SvelteKit
+[383] 
+[384] L'application est immédiatement accessible dans votre navigateur web à l'adresse : http://localhost:5173.
+[385] D.4 Guide d'Utilisation Pas à Pas pour l'Opérateur Agricole
+[386] Étape 1 : Connexion — Accéder à http://localhost:5173/signup pour créer un compte ou à /login pour s'authentifier.
+[387] Étape 2 : Sélection de Zone — Sur la page d'accueil, visualiser la carte du Burundi. Cliquer sur l'une des 5 provinces ou sélectionner une sous-zone de Bujumbura Rural (Imbo en plaine ou Mumirwa en montagne).
+[388] Étape 3 : Lecture de la Vigilance — Consulter la bannière de synthèse en haut de page. Si elle est ambre avec le signal 'X avis présentent un signal actif', examiner les alertes en priorité.
+[389] Étape 4 : Analyse des Graphiques — Balisage des séries horaires de température, précipitation, probabilité de pluie et vent avec tooltips temporels interactifs.
+[390] Étape 5 : Filtrage par Culture — Sélectionner la culture souhaitée (Maïs, Haricot, Riz, Bananier, Manioc, Patate douce, Pomme de terre) pour lire la consigne de terrain.
+[391] Étape 6 : Audit des Mesures — Cliquer sur 'Mesures & limitations' sur une carte d'avis pour auditer les valeurs exactes par rapport aux seuils IGEBU et lire les mises en garde déontologiques.
+[392] ANNEXE F — DÉPÔT GIT, STRUCTURE DU CODE SOURCE ET MÉTRIQUES
+[393] Cette annexe présente l'organisation physique du référentiel de code et les métriques de complexité et de volume de lignes de code (SLOC - Source Lines of Code) des deux projets :
+[394] Tableau F.1 — Métriques de lignes de code source (SLOC) par composant logiciel
+[395] 
+[396] F.1 Instructions d'Accès au Dépôt Git
+[397] Le code source du projet est structuré sous forme de deux répertoires de travail indépendants sur le poste de travail :
+[398] • Backend : c:\Users\PC\Desktop\Projects\weather-backend (Dépôt Git initialisé sur la branche 'master').
+[399] • Frontend : c:\Users\PC\Desktop\Projects\weather-app (Projet SvelteKit généré via npx sv create).
+[400] Pour cloner ou exporter l'intégralité du projet sur un serveur distant, les commandes Git standard sont les suivantes :
+[401] Extrait : Instructions d'initialisation et de validation Git
+[402] 
+[403] RÉFÉRENCES BIBLIOGRAPHIQUES
+[404] [1] Open-Meteo GmbH, « Open-Meteo Weather Forecast API Documentation », 2026. [En ligne]. Disponible sur : https://open-meteo.com/en/docs. [Source S1 du document de cadrage].
+[405] [2] Copernicus Emergency Management Service & ECMWF, « Global Flood Awareness System (GloFAS) River Discharge Forecast API », European Commission, 2026. [Source S2 du document de cadrage].
+[406] [3] NASA Goddard Space Flight Center, « Landslide Hazard Assessment for Situational Awareness (LHASA) Model », NASA Earth Science, 2024. [Source S3 du document de cadrage].
+[407] [4] OpenStreetMap Foundation, « OpenStreetMap Open Data Tiles and Leaflet JavaScript Mapping Library », 2026. [Source S4 du document de cadrage].
+[408] [5] Équipe de Projet UPG, « Document de cadrage du projet à développer en deux semaines : Système de veille météo et climatique au Burundi », Version révisée du 11 octobre 2026, 2026.
+[409] [6] Institut Géographique du Burundi (IGEBU), « Normes pluviométriques nationales et bulletins décadaires de suivi agrométéorologique au Burundi », Ministère de l'Environnement, Gitega, Burundi, 2024. [Source S6 du cadrage].
+[410] [7] C. Funk et al., « The Climate Hazards Center InfraRed Precipitation with Stations (CHIRPS) v3 : A high-resolution rainfall dataset for climate monitoring », Scientific Data, vol. 11, n° 1, pp. 1-18, 2024. [Source S7 du cadrage].
+[411] [8] R. Harris and Svelte Core Team, « Svelte 5 Documentation : Runes, Reactivity without Virtual DOM and SvelteKit Architecture », Svelte Society, 2025. [En ligne]. Disponible sur : https://svelte.dev/docs.
+[412] [9] S. Ramírez, « FastAPI : Modern, High-Performance Web Framework for Python with Automatic Pydantic Validation », 2025. [En ligne]. Disponible sur : https://fastapi.tiangolo.com.
+[413] [10] R. T. Fielding, « Architectural Styles and the Design of Network-based Software Architectures », Ph.D. dissertation, Department of Information and Computer Science, University of California, Irvine, 2000.
+[414] [11] A. Biryukov, D. Dinu, and P. Khovratovich, « Argon2 : the memory-hard function for password hashing and other applications », Password Hashing Competition Winner, RFC 9106, 2021.
+[415] [12] D. Brumley and D. Boneh, « Remote timing attacks are practical », Computer Networks, vol. 48, n° 5, pp. 701-716, 2005.
+[416] [13] M. Jones, J. Bradley, and N. Sakimura, « JSON Web Token (JWT) », Internet Engineering Task Force (IETF), RFC 7519, 2015.
+[417] [14] World Wide Web Consortium (W3C), « Web Content Accessibility Guidelines (WCAG) 2.1 », W3C Recommendation, 2018. [En ligne]. Disponible sur : https://www.w3.org/TR/WCAG21/.
+[418] [15] D. Clegg and R. Barker, « Case Method Fast-Track : A RAD Approach (MoSCoW Prioritization) », Addison-Wesley, Wokingham, 1994.
+[419] [16] Object Management Group (OMG), « Unified Modeling Language (OMG UML) Specification, Version 2.5.1 », OMG Document formal/2017-12-05, 2017.
+[420] [17] Institut des Sciences Agronomiques du Burundi (ISABU), « Fiches techniques des cultures vivrières et guides de gestion agro-climatique collinaire au Burundi », Bujumbura, Burundi, 2023. [Source S5 du cadrage].
+[421] [18] K. Schwaber and J. Sutherland, « The Scrum Guide : The Definitive Guide to Scrum : The Rules of the Game », Scrum.org, 2020.
+[422] [19] M. Cohn, « Succeeding with Agile : Software Development Using Scrum », Addison-Wesley Professional, Boston, MA, 2009.
+[423] [20] S. Newman, « Building Microservices : Designing Fine-Grained Systems (Backends for Frontends Pattern) », O'Reilly Media, Sebastopol, CA, 2021.
+[424] [21] World Meteorological Organization (WMO), « Guidelines on Multi-hazard Early Warning Systems », WMO-No. 1280, Geneva, Switzerland, 2022.
+[425] [22] République du Burundi, Ministère de l'Environnement, de l'Agriculture et de l'Élevage, « Plan National d'Adaptation aux Changements Climatiques (PNA) », Bujumbura, 2023.
+[426] [23] Université Polytechnique de Gitega (UPG), Faculté des Technologies de l'Information et de la Communication (TIC), « Canevas de Rapport Projet II — Département de Génie Logiciel », Gitega, Burundi, 2025.
+[427] [24] F. Chollet, « Deep Learning with Python, Second Edition », Manning Publications, Shelter Island, NY, 2021.
+[428] [25] J. Nielsen and R. Budiu, « Mobile Usability », New Riders Press, Berkeley, CA, 2012.
+
+=== TABLES ===
+
+--- TABLE 0 ---
+Code | Objectif Spécifique (OS) | Description Technique Détaillée | Indicateur Chiffré de Succès (SMART)
+OS1 | Collecte & Ingestion multi-sources résiliente | Développer un service asynchrone d'interrogation, normalisation et mise en cache des prévisions météorologiques horaires (Open-Meteo) et hydrologiques (GloFAS). | Taux de disponibilité des données ≥ 99% ; temps de réponse du cache SQLite < 50 ms ; résilience prouvée à 5 coupures simulées avec retry automatique (backoff 0.2s).
+OS2 | Moteur de règles métier fonctionnel pur | Implémenter un moteur algorithmique découplé appliquant les seuils officiels IGEBU (50/100 mm) et les règles ISABU pour 7 cultures vivrières sans effet de bord. | Taux de couverture de tests unitaires de 100% sur la logique décisionnelle (31/31 tests passés avec succès sous pytest) ; aucun crash en présence de données manquantes (NaN/None).
+OS3 | Architecture de sécurité et d'authentification | Intégrer un système complet de gestion des utilisateurs et sécurisation des routes météo via tokens JWT HS256 et cryptographie Argon2id. | Temps de réponse serveur constant lors des échecs d'authentification grâce à un dummy hash (neutralisation totale de l'énumération par canal auxiliaire) ; expiration stricte à 30 min.
+OS4 | Interface cartographique interactive et légère | Concevoir une interface monopage avec carte Leaflet tuilée OSM (Sveaflet) et graphiques vectoriels interactifs (svelteplot) adaptée aux faibles bandes passantes. | Poids total du bundle JavaScript initial compilé < 250 Ko ; temps de premier rendu utile (FCP) < 1,5 seconde sur connexion 3G simulée ; 100% responsive sur mobile et desktop.
+OS5 | Contextualisation territoriale et agronomique | Modéliser 5 zones pilotes provinciales avec distinction fine des altitudes (plaine <1000m vs montagne >1350m) et association dynamique aux cultures prévalentes régionales. | 100% des requêtes sur Bujumbura Rural appliquent le seuil exact de leur sous-zone (Imbo 50 mm vs Mumirwa 100 mm) avec repli de précaution automatique vers 50 mm en cas d'ambiguïté.
+
+--- TABLE 1 ---
+Mention Déontologique Préliminaire : Afin de respecter strictement la réglementation nationale sur les services météorologiques au Burundi, l'ensemble des messages produits par AgroMétéo Burundi se définit comme une aide consultative collinaire et ne se substitue en aucun cas aux avis et vigilances officielles émis par l'IGEBU ni aux ordres de sécurité civile de l'État.
+
+--- TABLE 2 ---
+TOPOGRAPHIE DU BURUNDI ET ZONAGE DES 5 ZONES PILOTES   Altitude    (m)   2600m ──┐                                         /\ (Crête Congo-Nil)           │                                        /  \   1800m ──┼───────────────────────┐               /    \       ┌──────────────────┐           │                       │              /      \      │ Gitega (1750m)   │   1500m ──┼───────────────────────┼─────────────/        \─────┤ Karusi (1600m)   │           │                       │   Mumirwa  /          \    │ Rutana (1700m)   │           │                       │  (> 1350m)/            \   └──────────────────┘   1000m ──┼────────┐              │  100mm/24h             └── Plateau Central           │        │ Imbo (<1000m)│  Montagne                  100 mm / 24 h    773m ──┴────────┴──────────────┴──────────────────────────────────────────────          Lac      Bujumbura Mairie    Bujumbura Rural            Plateaux de l'Est       Tanganyika    50 mm / 24 h     (Imbo 50mm / Mumirwa 100mm)   et du Kumoso
+
+--- TABLE 3 ---
+Zone / Localité | Identifiant Code | Coordonnées GPS | Altitude | Topographie | Seuil 24h | Cultures Prévalentes Associées (ISABU)
+Bujumbura Mairie | bujumbura | -3.3819° N, 29.3614° E | ~820 m | Plaine | 50.0 mm | Riz, Maïs, Manioc, Bananier
+Buja Rural (Imbo) | buja_rural_imbo | -3.4292° N, 29.3165° E | ~850 m | Plaine | 50.0 mm | Riz, Maïs, Manioc, Bananier
+Buja Rural (Mumirwa) | buja_rural_mumirwa | -3.4389° N, 29.6944° E | > 1 350 m | Montagne | 100.0 mm | Bananier, Maïs, Haricot, Manioc, Pomme de terre
+Gitega | gitega | -3.4271° N, 29.9246° E | 1 750 m | Montagne | 100.0 mm | Maïs, Haricot, Bananier, Riz, Patate douce, Pomme de terre
+Karusi | karusi | -3.1014° N, 30.1628° E | 1 600 m | Montagne | 100.0 mm | Maïs, Haricot, Bananier, Manioc, Patate douce
+Rutana | rutana | -3.9279° N, 29.9920° E | 1 700 m | Montagne | 100.0 mm | Riz, Maïs, Haricot, Manioc, Bananier
+
+--- TABLE 4 ---
+Catégorie d'Acteur | Missions Principales | Besoins Exprimés en Information | Impact Attendu de la Solution
+Petits Exploitants Vivriers | Production familiale sur micro-parcelles collinaires (maïs, haricot, tubercules, bananier). | Avis préventifs à 24-72h sur les fortes pluies (pour protéger les récoltes en séchage), le vent violent et les pauses de pluie prolongées. | Réduction drastique des pertes post-récolte (moisissure des grains) et meilleure préservation des buttes culturales.
+Coopératives Agricoles (Riz, Café, Maraîchage) | Gestion collective de bas-fonds irrigués, d'aires de séchage communautaires et d'intrants. | Surveillance hydrologique des débits de rivières amont, alertes sur les surélévations de nappes et prévisions de vent pour les hangars. | Coordination anticipée de la main-d'œuvre pour curer les canaux et consolider les diguettes avant l'arrivée des crues.
+Moniteurs Agricoles & DPAE (État) | Encadrement technique collinaire, vulgarisation des bonnes pratiques et remontée d'alertes. | Tableaux synthétiques par culture prévalente, traçabilité des indicateurs physiques bruts et des seuils réglementaires IGEBU. | Gain de temps dans la diffusion des conseils techniques lors des tournées et ciblage précis des collines à surveiller.
+ONG & Gestionnaires d'Urgence | Programmes de résilience communautaire, veille précoce, assistance humanitaire d'urgence. | Vue comparative multi-zones, indicateurs probabilistes transparents, affichage explicite des limitations méthodologiques. | Optimisation du pré-positionnement des stocks d'urgence (bâches, motopompes, semences de remplacement) avant les sinistres.
+
+--- TABLE 5 ---
+PARCOURS UTILISATEUR — AGROMÉTÉO BURUNDI    ┌─────────────────────────────────────────────────────────────────────────────┐   │ 1. AUTHENTIFICATION SÉCURISÉE (/login ou /signup)                           │      Saisie identifiant/mot de passe │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ Redirection automatique si session valide                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ 2. SÉLECTION SPATIALE DE LA ZONE (/ d'accueil)                              │   │    Carte Leaflet du Burundi (6 marqueurs) ou Grille latérale des 5 provinces │   │    Choix de la sous-zone le cas échéant (Imbo plaine vs Mumirwa montagne)   │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ Clic marqueur                                           ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ 3. TABLEAU DE BORD AGRO-MÉTÉOROLOGIQUE (/region/[slug])                     │   │    • Synthèse de vigilance (Bannière verte nominale ou ambre avec alerte)  │   │    • Visualisation interactive svelteplot (T°C, Pluie, Rafales, Probabilité)│   │    • Indicateurs statistiques automatiques (Min, Max, Moyenne)             │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ Filtrage dynamique                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ 4. CONSULTATION DES AVIS PAR CULTURE PRÉVALENTE (ISABU)                     │   │    Filtres interactifs (par culture et par sévérité d'alerte)               │   │    Lecture des messages d'action pragmatiques (« Protégez... », etc.)       │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ Clic « Mesures & limitations »                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ 5. AUDIT SCIENTIFIQUE ET LIMITATIONS DU MODÈLE (Fenêtre Modale)             │   │    Jauges graphiques valeur/seuil (24h, 72h, vent, crues) + Avertissements │   └─────────────────────────────────────────────────────────────────────────────┘
+
+--- TABLE 6 ---
+ARCHITECTURE CLIENT-SERVEUR ET PATRON BFF DU SYSTÈME   ┌────────────────────────┐   │   NAVIGATEUR WEB       │ (Terminal mobile ou PC de l'utilisateur)   │   Client Svelte 5      │   └───────────┬────────────┘               │ 1. Requête HTTP (Document HTML / Données SSR)               │    + Cookie de session sécurisé (HttpOnly, SameSite=Strict)               ▼   ┌────────────────────────┐   │ SERVEUR SVELTEKIT      │ <── PATRON BACKEND-FOR-FRONTEND (BFF)   │ (+page.server.js)      │ • Garde d'authentification et routage sécurisé   └───────────┬────────────┘ • Extraction sécurisée du JWT depuis le Cookie HttpOnly               │              • Zéro exposition de secrets ou de tokens côté client               │              • Immunité totale contre les restrictions CORS navigateur               │ 2. Requête API REST interne sécurisée               │    Header: "Authorization: Bearer <JWT>"               ▼   ┌────────────────────────┐       ┌────────────────────────┐   │ BACKEND FASTAPI (ASGI) │ <───> │ MONGODB ATLAS (Cloud)  │   │ • Router weather.py    │       │ Collection 'users'     │   │ • Moteur pur conseils  │       └────────────────────────┘   │ • requests-cache (1h)  │       ┌────────────────────────┐   └───────────┬────────────┘ <───> │ CACHE LOCAL SQLITE     │               │                    │ Fichier .cache.sqlite  │               │                    └────────────────────────┘               │ 3. Appels HTTP externes (FlatBuffers / JSON)               ▼   ┌─────────────────────────────────────────────────────────┐   │ SERVICES TIERS MÉTÉO ET HYDROLOGIE                      │   │ • Open-Meteo Forecast API (Prévisions 7j + Passé 7j)    │   │ • GloFAS Flood API (Débits 7j + Historique p75 sur 31j) │   └─────────────────────────────────────────────────────────┘
+
+--- TABLE 7 ---
+Critère d'Ingénierie | Svelte 5 / SvelteKit (Choix Retenu) | React 19 / Next.js | Vue.js 3 / Nuxt | Angular 18
+Paradigme de Réactivité | Compilation sans Virtual DOM (Runes $state, $derived, $props). Code impératif chirurgical ultra-rapide. | Virtual DOM avec cycle de réconciliation mémoire (Diffing overhead à chaque re-render). | Virtual DOM optimisé avec Proxies réactifs (Reactivité basée sur Mutation). | Détection de changements globale via Zone.js (surveillance lourde du cycle de vie des objets).
+Poids du Bundle Initial (gzippé) | Extrêmement compact : 15 à 30 Ko de socle. Poids total page < 100 Ko. | Élevé : 80 à 150 Ko minimum avant ajout des bibliothèques tierces. | Modéré : 40 à 70 Ko pour le cœur d'exécution. | Très lourd : > 250 Ko de base, inadapté aux réseaux ruraux dégradés.
+Temps de Premier Rendu (FCP) | Quasi-instantané (< 1,2 s sur réseau 3G émulé à 1,6 Mbps). | Modéré (1,8 s à 2,5 s en fonction de la complexité de l'arbre de composants). | Rapide (1,4 s à 1,8 s). | Lent (> 2,8 s sur terminaux d'entrée de gamme).
+Architecture SSR & Hydratation | Isomorphe native via +page.server.js. Possibilité de désactiver le SSR par page (ssr=false pour Leaflet). | Composants serveur React (RSC) puissants mais configuration et flux de données complexes. | Intégration SSR mature via Nuxt, mais découplage moins granulaire. | Hydratation complexe via Angular Universal / Hydration API.
+Courbe d'Apprentissage & Syntaxe | Syntaxe native proche de HTML/CSS/JS standard. Les Runes éliminent la magie des syntaxes $ d'antan. | Complexe : JSX verbeux, subtilités des dépendances de hooks (useEffect, useCallback). | Accessible via l'API de Composition (setup, ref, computed). | Très abrupte : TypeScript obligatoire, injection de dépendances verbeuse, observables RxJS.
+
+--- TABLE 8 ---
+Critère d'Évaluation | FastAPI (Python) (Choix Retenu) | Django / DRF | Express.js / Node.js | Spring Boot (Java)
+Modèle d'Exécution & Concurrence | Asynchrone natif via protocole ASGI (uvicorn/uvloop). Gestion non-bloquante de milliers de requêtes I/O. | Historiquement synchrone (WSGI) ; support asynchrone partiel et complexe sur l'ORM. | Asynchrone mono-thread basé sur l'Event Loop de V8. Excellentes performances I/O. | Multi-threading traditionnel sur JVM lourde ou threads virtuels récents (Projet Loom).
+Typage et Validation des Données | Intégration native de Pydantic v2 (moteur Rust). Validation automatique stricte à l'exécution dès la signature. | Formulaires et sérialiseurs verbeux nécessitant de nombreuses classes déclaratives. | Aucune validation native : nécessite l'ajout de dépendances externes manuelles (Joi, Zod). | Typage statique rigide à la compilation ; validation via annotations Hibernate/Bean Validation.
+Écosystème Météorologique & Data | Inégalable : intégration native et directe avec Pandas, NumPy, Scipy, client binaire Open-Meteo. | Bon écosystème Python, mais lourd et principalement orienté applications d'administration SQL. | Très limité pour le calcul numérique vectoriel et les structures temporelles complexes. | Bon mais bibliothèques scientifiques très verbeuses et gestion lourde de la mémoire heap.
+Empreinte Mémoire Serveur (RAM) | Très légère : environ 50 à 80 Mo au repos, idéale pour les micro-instances cloud. | Moyenne : 120 à 200 Mo de RAM au démarrage. | Légère : 60 à 100 Mo de RAM. | Très élevée : 300 à 600 Mo de RAM minimum pour démarrer le conteneur Spring.
+Documentation d'API & Standards | Génération 100% automatique et dynamique des spécifications OpenAPI 3.0 et interfaces Swagger UI / ReDoc. | Nécessite des extensions tierces (drf-yasg, drf-spectacular) sujettes à désynchronisation. | Manuelle ou via annotations complexes JSDoc/Swagger. | Via dépendances Springdoc-OpenAPI nécessitant de nombreuses annotations de code.
+
+--- TABLE 9 ---
+Dimension d'Analyse | Cadrage Initial : PostgreSQL Relationnel | Implémentation Réelle : MongoDB Atlas + Cache SQLite | Justification Technique et Rationale d'Ingénierie
+Modèle de Données | Tables rigides, schémas normalisés, clés étrangères, contraintes d'intégrité référentielle strictes. | Collection documentaire BSON (`users`) sans schéma contraignant + Fichier clé-valeur persistant (`.cache.sqlite`). | Pour la gestion des comptes utilisateurs, le modèle document BSON simplifie l'évolution des attributs sans nécessiter de migrations SQL bloquantes.
+Gestion des Séries Météo Temporelles | Écriture continue de milliers d'enregistrements horaires en tables relationnelles (génération massive de lignes). | Mise en cache HTTP transitoire via `requests-cache` sur fichier local SQLite avec TTL de 3 600 secondes (1 heure). | Les prévisions météo horaires (168 heures glissantes) sont par nature hautement périssables. Les persister en base SQL génère un encombrement inutile et des opérations d'I/O disques coûteuses.
+Administration et Déploiement | Nécessite l'hébergement d'une instance PostgreSQL permanente, la gestion des connexions pools et des scripts Alembic. | Cluster MongoDB Atlas Serverless managé dans le Cloud (Tier Sandbox M0 gratuit) + Cache local sans configuration. | Coût d'exploitation strictement nul ($0), aucune corvée de maintenance de serveur de base de données, haute disponibilité assurée nativement.
+Latence d'Accès aux Prévisions | Requêtes SQL avec jointures et filtrages temporels sur index volumineux (> 80 ms). | Accès instantané par clé d'URL sérialisée dans SQLite local (< 5 ms). | Gain de réactivité spectaculaire pour le serveur FastAPI, qui répond en moins de 15 ms lorsque la zone est en cache.
+
+--- TABLE 10 ---
+def authenticate_user(self, username: str, password: str):     # Génération d'un hash fictif valide pour absorber le calcul cryptographique     DUMMY_HASH = self.password_hash.hash("dummypassword")     user = self.get_user(username)     if not user:         # L'utilisateur n'existe pas : on exécute TOUT DE MÊME la vérification complète         # afin d'égaliser strictement le temps d'exécution serveur (anti-timing attack)         self.verify_password(password, DUMMY_HASH)         return False     if not self.verify_password(password, user.hashed_password):         return False     return user
+
+--- TABLE 11 ---
+Code EF | Intitulé de l'Exigence | Description Fonctionnelle Détaillée | Priorité MoSCoW | Statut dans l'Implémentation
+EF-01 | Inscription Utilisateur | Permettre la création d'un compte avec nom, email unique et mot de passe sécurisé haché en base. | Must have | Implémenté (POST /user, Argon2id)
+EF-02 | Authentification OAuth2 / JWT | Authentifier l'utilisateur via mot de passe et délivrer un jeton Bearer JWT valide 30 minutes. | Must have | Implémenté (POST /token, pyjwt HS256)
+EF-03 | Protection des Routes Météo | Interdire formellement l'accès aux données météo sans jeton JWT valide (HTTP 401). | Must have | Implémenté (Depends get_current_user)
+EF-04 | Visualisation Cartographique | Afficher une carte Leaflet interactive tuilée OSM centrée sur le Burundi avec les stations géolocalisées. | Must have | Implémenté (Leaflet.svelte / Sveaflet)
+EF-05 | Sélection Territoriale | Permettre la sélection d'une province via clic sur marqueur cartographique ou panneau latéral. | Must have | Implémenté (Routes dynamiques /region/[slug])
+EF-06 | Scission Topographique Buja Rural | Subdiviser Bujumbura Rural en sous-zone de plaine (Imbo) et de montagne (Mumirwa). | Must have | Implémenté (app/config.py, sous-menus UI)
+EF-07 | Collecte Météo Horaires 7j | Ingérer automatiquement les prévisions de T°, pluie, vent et probabilité sur 7 jours via Open-Meteo. | Must have | Implémenté (Client Open-Meteo binaire)
+EF-08 | Ingestion Historique Passé 7j | Récupérer les estimations des 7 derniers jours écoulés pour évaluer la saturation hydrique préalable. | Must have | Implémenté (past_days=7, measures.py)
+EF-09 | Surveillance Hydrologique GloFAS | Interroger les débits prévus à 7 jours sur la maille hydrographique Copernicus associée à la zone. | Must have | Implémenté (flood-api.open-meteo.com)
+EF-10 | Calcul Seuil Anormal p75 | Calculer le 75e percentile des débits des 31 derniers jours pour déterminer un seuil d'anomalie dynamique. | Should have | Implémenté (get_flood_past_data)
+EF-11 | Alerte Pluie Critique 24h | Déclencher un conseil d'action si la pluie 24h franchit 50 mm (plaine) ou 100 mm (montagne). | Must have | Implémenté (Seuils IGEBU, advice.py)
+EF-12 | Alerte Pluie Prolongée 72h | Déclencher un conseil d'engorgement des sols si la pluie 72h franchit 60 mm (plaine) ou 90 mm (montagne). | Must have | Implémenté (Seuils IGEBU, advice.py)
+EF-13 | Alerte Sols Saturés 7j Passés | Déclencher une alerte pour tubercules et haricot si les 7 jours passés cumulent ≥ 50 mm de pluie. | Should have | Implémenté (Règle humidité des sols)
+EF-14 | Alerte Vent Violent & Rafales | Alerter les producteurs de bananes et de maïs dès que les rafales prévues atteignent ≥ 40 km/h. | Must have | Implémenté (advice.py, seuil 40 km/h)
+EF-15 | Alerte Crue Rizicole | Générer un conseil d'inspection des diguettes rizicoles si le débit prévu dépasse le percentile p75. | Must have | Implémenté (advice.py, focus riz bas-fond)
+EF-16 | Détection Période Sèche | Identifier les séquences sèches critiques d'au moins 5 jours consécutifs avec pluie < 2 mm. | Should have | Implémenté (advice.py, règle sécheresse)
+EF-17 | Cultures Prévalentes Régionales | Filtrer dynamiquement les avis selon la matrice agro-écologique ISABU propre à la province. | Must have | Implémenté (CULTURES_PAR_ZONE dans backend)
+EF-18 | Traçabilité des Mesures & Seuils | Afficher dans une modale la valeur exacte, le seuil comparatif, la source et les limitations du modèle. | Must have | Implémenté (Modale Mesures & Limitations)
+EF-19 | Modèle Glissements NASA LHASA | Croiser la carte de susceptibilité globale aux glissements avec les précipitations satellitaires. | Could have | Retiré du périmètre (Justifié au Chapitre V)
+EF-20 | Précipitations Historiques CHIRPS | Intégrer les séries longues CHIRPS v3 pour le calcul des déciles historiques centennaux. | Could have | Remplacé (Réanalyses Open-Meteo past_days=7)
+
+--- TABLE 12 ---
+Code ENF | Dimension Qualité | Exigence Formelle et Spécification | Critère d'Acceptation & Métrique Mesurable
+ENF-01 | Performance & Latence | Temps de réponse minimal lors des requêtes d'affichage d'un bulletin météorologique. | Temps de réponse API < 50 ms lorsque la zone est en cache SQLite ; < 1,5 s en rafraîchissement externe.
+ENF-02 | Disponibilité & Cache | Capacité à servir les données météorologiques même lors d'une interruption transitoire du réseau. | Mise en cache HTTP locale SQLite de 3 600 s (1 heure) ; 5 relances automatiques avec backoff exponentiel.
+ENF-03 | Résistance Cryptographique | Protection maximale des mots de passe utilisateurs contre les attaques par force brute distribuée. | Algorithme Argon2id (m=65536 Ko, t=3, p=4) avec coût mémoire incompressible de 64 Mo par hash.
+ENF-04 | Sécurité Anti-Timing | Impossibilité de déduire l'existence d'une adresse email par chronométrage réseau lors de la connexion. | Égalisation du temps de calcul serveur par exécution d'un DUMMY_HASH en cas d'identifiant introuvable.
+ENF-05 | Intégrité Mathématique | Interdiction stricte d'interpoler des valeurs ou de masquer des séries temporelles incomplètes. | Toute lacune ou valeur NaN produit la valeur None et positionne immédiatement le statut 'non_evalue'.
+ENF-06 | Déontologie Institutionnelle | Respect absolu du monopole régalien des autorités de sécurité civile du Burundi. | Bannissement total des expressions 'inondation certaine' et 'évacuation' dans l'ensemble des modules d'avis.
+ENF-07 | Compacité & Bas Débit | Optimisation du volume de données transféré pour s'adapter aux réseaux 3G ruraux limités. | Poids total du bundle JavaScript client initial généré par Vite < 250 Ko (gzippé < 100 Ko).
+ENF-08 | Accessibilité Numérique | Lisibilité et manipulabilité aisée en plein soleil sur le terrain par des moniteurs agricoles. | Conformité WCAG 2.1 AA : contraste textuel > 7:1 sur fond sombre, cibles tactiles minimales de 44 × 44 px.
+ENF-09 | Testabilité Unitaire Pure | Découplage absolu entre la logique de décision agricole et les infrastructures d'E/S réseau. | 100% des fonctions des modules measures.py et advice.py testables unitairement sans mock réseau complexe.
+ENF-10 | Conformité aux Standards | Respect rigoureux des standards ouverts du web et du génie logiciel contemporain. | Spécification OpenAPI 3.0 auto-générée, validation Pydantic stricte, conformité ECMAScript / ESLint 10.
+
+--- TABLE 13 ---
+ARCHITECTURE EN COUCHES ET FLUX DE DONNÉES APPLICATIFS   ┌─────────────────────────────────────────────────────────────────────────────┐   │ COUCHE PRÉSENTATION & CLIENT WEB (Svelte 5 / Runes)                         │   │ • Navigation & Layout (+layout.svelte)      • Formulaires (/login, /signup) │   │ • Hub Cartographique Leaflet.svelte         • Dashboard /region/[slug]      │   │ • Visualisation SVG svelteplot              • Modale Mesures & Limitations  │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ Requêtes HTTP internes + Cookie HttpOnly JWT                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ COUCHE BACKEND-FOR-FRONTEND (SvelteKit Server Runtime)                      │   │ • Garde de navigation serveur (+layout.server.js)                           │   │ • Actions de connexion/déconnexion (/login, /signup, +page.server.js)       │   │ • Chargement serveur des bulletins régionaux (/region/[slug]/+page.server.js)│   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ Protocole REST API (Header: Bearer <JWT>)                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ COUCHE LOGIQUE MÉTIER & SERVICES (FastAPI / Python 3.14)                    │   │ • Contrôleurs d'API (routes/weather.py, routes/token.py, routes/user.py)    │   │ • Sécurité & Chiffrement (core/security.py : Argon2id, HS256, DUMMY_HASH)   │   │ • Moteur d'Agrégation Temporelle (services/measures.py)                    │   │ • Moteur de Règles Décisionnelles Agricoles (services/advice.py)             │   │ • Connecteur & Cache HTTP Résilient (services/weather.py)                   │   └───────────────────┬─────────────────────────────────────┬───────────────────┘                       │                                     │                       ▼                                     ▼   ┌───────────────────────────────────────┐ ┌───────────────────────────────────┐   │ PERSISTANCE INTERNE                   │ │ FLUX EXTERNES MÉTÉO & CRUES       │   │ • MongoDB Atlas (Collection 'users')  │ │ • Open-Meteo Weather API          │   │ • Cache SQLite local (.cache.sqlite)  │ │ • GloFAS Open-Meteo Flood API     │   └───────────────────────────────────────┘ └───────────────────────────────────┘
+
+--- TABLE 14 ---
+DIAGRAMME DE CAS D'UTILISATION (UML)                                   ┌───────────────────────────────────────────────┐                                   │            AGROMÉTÉO BURUNDI                  │                                   │                                               │                                   │   ( S'inscrire sur la plateforme )            │                                   │                 ▲                             │                                   │                 │ <<include>>                 │     웃                            │   ( S'authentifier via OAuth2 / JWT )         │   Utilisateur Agricole /          │                 ▲                             │   Moniteur DPAE                   │                 │ <<extend>>                  │     │                             │   ( Consulter la carte interactive du Burundi)│     ├───(Consulter Carte)─────────┤                 │                             │     │                             │   ( Sélectionner une province pilote )        │     ├───(Sélectionner Région)─────┤                 │                             │     │                             │   ( Choisir sous-zone Imbo ou Mumirwa )       │     ├───(Visualiser Météo)────────┤                 │                             │     │                             │   ( Consulter les courbes météo svelteplot )  │     ├───(Lire Avis ISABU)─────────┤                 │                             │     │                             │   ( Filtrer les conseils par culture vivrière)│     └───(Inspecter Mesures)───────┤                 │                             │                                   │   ( Auditer les mesures et limitations modale)│                                   │                 │                             │                                   │   ( Se déconnecter )                          │                                   │                                               │     웃                            │   ( Interroger les prévisions Open-Meteo )    │   Fournisseur Météo Externe ──────┼─────────────────┼─────────────────────────────┤   (Open-Meteo / GloFAS)           │   ( Collecter les débits fluviaux GloFAS )    │                                   └───────────────────────────────────────────────┘
+
+--- TABLE 15 ---
+DIAGRAMME DE CLASSES MÉTIER (UML)   ┌─────────────────────────┐               ┌─────────────────────────────────┐   │       <<Schema>>        │               │           <<Service>>           │   │          User           │               │          SecurityManager        │   ├─────────────────────────┤               ├─────────────────────────────────┤   │ + username: str (Email) │               │ - secret_key: str               │   │ + name: str             │               │ - algorithm: str = "HS256"      │   └─────────────────────────┘               ├─────────────────────────────────┤                ▲                            │ + verify_password(...) : bool   │                │ hérite                     │ + get_password_hash(...) : str  │   ┌─────────────────────────┐               │ + authenticate_user(...) : User │   │       <<Document>>      │               │ + create_access_token(...) : str│   │        UserInDB         │               │ + get_current_user(...) : User  │   ├─────────────────────────┤               └─────────────────────────────────┘   │ + hashed_password: str  │   └─────────────────────────┘                ▲                │ persiste dans   ┌─────────────────────────┐               ┌─────────────────────────────────┐   │       <<Database>>      │               │           <<Service>>           │   │     MongoDB 'users'     │               │          MeasuresEngine         │   └─────────────────────────┘               ├─────────────────────────────────┤                                             │ + extraire_mesures(...) : dict  │   ┌─────────────────────────┐               │ - _fenetre_complete(...) : bool │   │       <<Service>>       │               │ - _somme_pluie(...) : float     │   │       AdviceEngine      │               │ - _max_rafales(...) : float     │   ├─────────────────────────┤               └─────────────────────────────────┘   │ + seuils: Seuils        │                                ▲   ├─────────────────────────┤                                │ transmet dict mesures   │ + generer_conseil(...)  │                                │   │ + generer_conseils(...) │─────────────── évalue ─────────┘   └─────────────────────────┘                │ génère                ▼   ┌───────────────────────────────────────────────────────────────────────────┐   │                               <<DataStructure>>                           │   │                                ConseilAgricole                            │   ├───────────────────────────────────────────────────────────────────────────┤   │ + culture: str                   + statut: StatutConseil ("actif", etc.)  │   │ + zone: str                      + sous_zone: Optional[str]               │   │ + date_evaluation: str (ISO)     + validite: str ("24h", "72h", "7j")     │   │ + message: str (Action terrain)  + regles_declenchees: List[str]          │   │ + mesures_utilisees: dict        + limitations: List[str]                 │   └───────────────────────────────────────────────────────────────────────────┘
+
+--- TABLE 16 ---
+Entité / Classe | Couche Logicielle | Responsabilité & Fonctions Principales | Attributs Majeurs
+User & UserInDB | Schemas (app/schemas/user.py) | Représentation typée du profil utilisateur et encapsulation du mot de passe haché. | username (email), name, hashed_password (Argon2id)
+SecurityManager | Core (app/core/security.py) | Hachage, vérification anti-timing, émission et validation des jetons d'accès JWT. | SECRET_KEY, ALGORITHM (HS256), ACCESS_TOKEN_EXPIRE_MINUTES (30)
+MeasuresEngine | Service (app/services/measures.py) | Alignement temporel sur t0, extraction vectorielle des cumuls 24h/72h/7j et rafales. | extraire_mesures(), _somme_pluie(), _fenetre_complete()
+AdviceEngine | Service (app/services/advice.py) | Évaluation fonctionnelle pure des seuils IGEBU et règles ISABU par culture vivrière. | generer_conseil(), generer_conseils(), CULTURES_PAR_ZONE
+ConseilAgricole | Structure Domaine | Encapsulation complète de la directive d'action agricole et des métadonnées de traçabilité. | culture, zone, statut, validite, message, limitations
+
+--- TABLE 17 ---
+DIAGRAMME DE COMPOSANTS LOGICIELS (UML)   ┌─────────────────────────────────────────────────────────────────────────────┐   │ <<Frontend Component>> : SvelteKit Client (Navigateur Web)                  │   │  [ Leaflet.svelte (Sveaflet 0.1.5) ]   [ SveltePlot (Graphiques SVG) ]       │   │  [ Dashboard (+page.svelte) ]          [ Modale Mesures & Limitations ]     │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ JSON / HTML SSR (Port 5173 / 3000)                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ <<BFF Component>> : SvelteKit Server Runtime (+page.server.js)              │   │  [ Auth Guard (+layout.server.js) ]    [ Session Cookie Manager (HttpOnly) ]│   │  [ Data Fetcher (region/[slug]) ]      [ Form Action Handlers ]             │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ REST API / Bearer Token (Port 8000)                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ <<Backend Component>> : FastAPI Application Core                            │   │  [ Router: weather.py ]   [ Router: token.py ]   [ Router: user.py ]         │   │  [ Core: security.py ]    [ Core: db.py ]        [ Config: config.py ]       │   │  [ Service: measures.py ] [ Service: advice.py ] [ Service: weather.py ]     │   └───────────────────┬─────────────────────────────────────┬───────────────────┘                       │ Driver PyMongo                      │ Client FlatBuffers                       ▼                                     ▼   ┌───────────────────────────────────────┐ ┌───────────────────────────────────┐   │ <<Data Storage>>                      │ │ <<External Web Services>>         │   │ [ MongoDB Atlas Cloud ('users') ]     │ │ [ Open-Meteo Weather Forecast ]   │   │ [ SQLite Local Cache (.cache.sqlite) ]│ │ [ GloFAS Flood API (Copernicus) ] │   └───────────────────────────────────────┘ └───────────────────────────────────┘
+
+--- TABLE 18 ---
+DIAGRAMME DE SÉQUENCE : AUTHENTIFICATION UTILISATEUR   Utilisateur        Client SvelteKit         BFF Server             Backend FastAPI         MongoDB Atlas       │                     │                     │                         │                      │       ├── 1. POST /login ──>│                     │                         │                      │       │   (username, pwd)   ├── 2. Form Submit ──>│                         │                      │       │                     │   (action /login)   ├── 3. POST /token ──────>│                      │       │                     │                     │   (x-www-form-urlencoded)│                      │       │                     │                     │                         ├── 4. get_user() ────>│       │                     │                     │                         │<── user document ────┤       │                     │                     │                         │                      │       │                     │                     │                         ├── 5. verify_password()       │                     │                     │                         │   (ou DUMMY_HASH)    │       │                     │                     │                         │                      │       │                     │                     │                         ├── 6. encode JWT HS256│       │                     │                     │<── 7. {access_token} ───┤   (expire 30 min)    │       │                     │                     │                         │                      │       │                     │                     ├── 8. cookies.set() ─────┤                      │       │                     │                     │   (HttpOnly, Strict)    │                      │       │                     │<── 9. Redirect 303 ─┤                         │                      │       │<── 10. Affiche Home─┤    vers / d'accueil │                         │                      │
+
+--- TABLE 19 ---
+DIAGRAMME DE SÉQUENCE : CONSULTATION MÉTÉO ET AVIS ISABU   Utilisateur        Client SvelteKit         BFF Server             Backend FastAPI       Open-Meteo & GloFAS       │                     │                     │                         │                      │       ├── 1. Clic Région ──>│                     │                         │                      │       │   (/region/gitega)  ├── 2. load() ───────>│                         │                      │       │                     │   (Cookie inclus)   │                         │                      │       │                     │                     ├── 3. GET /gitega ──────>│                      │       │                     │                     │   (Bearer <JWT>)        ├── 4. Vérifie JWT     │       │                     │                     │                         │                      │       │                     │                     │                         ├── 5. Check Cache ────┐       │                     │                     │                         │   .cache.sqlite      │       │                     │                     │                         │<── HIT / MISS ───────┘       │                     │                     │                         │                      │       │                     │                     │                         ├── 6. (Si MISS) Fetch>│       │                     │                     │                         │<── FlatBuffers Data ─┤       │                     │                     │                         │                      │       │                     │                     │                         ├── 7. extraire_mesures()       │                     │                     │                         │   (measures.py)      │       │                     │                     │                         ├── 8. generer_conseils()       │                     │                     │                         │   (advice.py)        │       │                     │                     │<── 9. JSON Unifié ──────┤                      │       │                     │                     │    (Météo + Conseils)   │                      │       │                     │<── 10. Rendu Page ──┤                         │                      │       │<── 11. Affichage ───┤    (Leaflet, Plot,  │                         │                      │       │    Courbes & Avis   │     Cartes Conseils)│                         │                      │
+
+--- TABLE 20 ---
+DIAGRAMME D'ÉTATS-TRANSITIONS DES AVIS DE VIGILANCE        ┌────────────────┐        │   INITIAL      │        └───────┬────────┘                │ Réception des séries temporelles (Open-Meteo & GloFAS)                ▼        ┌────────────────────────────────────────────────────────┐        │             ÉVALUATION DES DONNÉES ENTRANTES           │        └───────┬────────────────────────────────────────┬───────┘                │ Donnée indispensable manquante         │ Toutes données requises                │ (NaN, None, série tronquée)            │ complètes et valides                ▼                                        ▼     ┌───────────────────────────┐            ┌────────────────────────────────────┐     │     ÉTAT : NON_ÉVALUÉ     │            │    ÉVALUATION DES RÈGLES MÉTIER    │     │ « Données indisponibles.  │            │ (Seuils IGEBU, Vent, Débit p75)    │     │ L'absence de données n'est│            └──────────┬──────────────────┬──────┘     │ pas une absence de danger»│                       │                  │     └───────────────────────────┘       Au moins 1 seuil│                  │ Aucun seuil                                         critique franchi│                  │ franchi                                                         ▼                  ▼                                             ┌───────────────────┐  ┌────────────────────┐                                             │ÉTAT: CONSEIL_ACTIF│  │ÉTAT: SANS_SIGNAL   │                                             │Bannière ambre     │  │Bannière verte      │                                             │Directive d'action │  │Rappel probabiliste │                                             │immédiate terrain  │  │Vérification locale │                                             └───────────────────┘  └────────────────────┘
+
+--- TABLE 21 ---
+DIAGRAMME DE DÉPLOIEMENT PHYSIQUE DU SYSTÈME   ┌─────────────────────────────────────────────────────────────────────────────┐   │ NŒUD CLIENT : Terminal Mobile / PC Agricole                                 │   │ • Navigateur Web moderne (Chrome Mobile, Firefox, Safari)                   │   │ • Exécution Client Svelte 5 (Runes, Sveaflet, SVG SveltePlot)               │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ HTTPS / TCP 443                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ NŒUD SERVEUR FRONTEND : Runtime Node.js 22                                  │   │ • Serveur d'Application SvelteKit (Port 5173 / 3000)                        │   │ • Adaptateur @sveltejs/adapter-auto                                         │   │ • Gestionnaire de sessions cookies HttpOnly                                 │   └──────────────────────────────────────┬──────────────────────────────────────┘                                          │ HTTP / Réseau Privé Local (Port 8000)                                          ▼   ┌─────────────────────────────────────────────────────────────────────────────┐   │ NŒUD SERVEUR BACKEND : Serveur d'Application Python 3.14                    │   │ • Moteur ASGI Uvicorn (uvicorn app.main:app)                                │   │ • Framework FastAPI v0.159.1                                                │   │ • Cache HTTP local SQLite (.cache.sqlite) sur système de fichiers NVMe      │   └───────────────────┬─────────────────────────────────────┬───────────────────┘                       │ TLS / Port 27017                    │ HTTPS / Port 443                       ▼                                     ▼   ┌───────────────────────────────────────┐ ┌───────────────────────────────────┐   │ CLOUD DATABASE : MongoDB Atlas M0     │ │ CLOUD APIS TIERS : Open-Meteo     │   │ • Cluster cluster0.3iilu.mongodb.net  │ │ • api.open-meteo.com/v1/forecast  │   │ • Base 'weather-app', Coll. 'users'   │ │ • flood-api.open-meteo.com/v1/flood│   └───────────────────────────────────────┘ └───────────────────────────────────┘
+
+--- TABLE 22 ---
+{   "_id": ObjectId("672100000000000000000001"),   "username": "moniteur.gitega@agrometeo.bi",   "name": "Pierre Nkurunziza",   "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$SD/Y0VojbYzgQOFpkuoOwg$5ZvE2F8bvlXvm4fC7QfwBSkKzA5TXBbR1X1ktwP45Yc" }
+
+--- TABLE 23 ---
+Jour Ouvré | Phase / Sprint | Objectifs et Livrables Techniques | Statut de Clôture
+J1 - J2 | Sprint 1 : Exploration & Cadrage | Validation des coordonnées GPS des 5 zones, test des points GloFAS, formalisation des seuils IGEBU (50/100 mm). | Validé à 100%
+J3 - J5 | Sprint 2 : Backend Pur & Sécurité | Développement de measures.py et advice.py, client HTTP avec cache SQLite, auth Argon2id / JWT et tests pytest. | Validé à 100% (31/31 tests)
+J6 - J7 | Sprint 3 : Frontend SvelteKit | Architecture des routes (/login, /signup, /region/[slug]), intégration Sveaflet/Leaflet et graphiques svelteplot. | Validé à 100%
+J8 - J9 | Sprint 4 : Intégration & Validation | Connexion API BFF, gestion des cookies HttpOnly, tests d'affichage mobile responsive et validation du build Vite. | Validé à 100% (Build exit 0)
+J10 | Sprint 5 : Synthèse & Documentation | Rédaction du rapport académique UPG, matrices d'évaluation comparative et préparation des livrables. | Validé à 100%
+
+--- TABLE 24 ---
+Composant Logiciel | Version Retenue | Rôle Technique & Responsabilité | Justification d'Ingénierie
+Python | >= 3.14.0 | Langage d'exécution du backend FastAPI | Nouvelles optimisations de l'interpréteur et gestion améliorée du typage statique.
+uv | 0.11.17 | Gestionnaire d'environnement et de dépendances Python | Résolution de lockfile et installation des packages 10 à 50 fois plus rapide que pip/poetry.
+FastAPI | >= 0.159.1 | Framework web asynchrone (ASGI) | Typage fort Pydantic v2, documentation OpenAPI interactive et performance uvloop.
+Node.js | v22.x LTS | Runtime JavaScript d'exécution serveur | Support natif des ES Modules, haute performance du moteur V8 et compatibilité SvelteKit 3.
+SvelteKit / Svelte | Kit 3.0.0 / Svelte 5.57.1 | Framework full-stack web réactif (mode Runes) | Compilation directe sans Virtual DOM, réactivité chirurgicale et architecture BFF native.
+Vite | 8.3.0 | Compilateur et bundler de production | Compilation ultra-rapide HMR (Hot Module Replacement) et optimisation du tree-shaking.
+Tailwind CSS | 4.3.0 (@tailwindcss/vite) | Moteur de style CSS utilitaire | Architecture zéro-configuration intégrée à Vite, chargement dynamique des styles sans fichier de config.
+Leaflet & Sveaflet | 1.9.4 / 0.1.5 | Moteur cartographique interactif libre | Affichage fluide de la carte tuilée OpenStreetMap avec intégration de composants Svelte.
+svelteplot | 0.14.2 | Moteur de visualisation vectorielle SVG | Graphiques interactifs accessibles avec tooltips temporels basés sur la grammaire des graphiques.
+
+--- TABLE 25 ---
+ARBORESCENCE DÉTAILLÉE DE WEATHER-BACKEND   weather-backend/   ├── .cache.sqlite          # Base SQLite locale pour la mise en cache HTTP 1h   ├── .env                   # Configuration secrète (DB_CONNECTION_STRING, SECRET_KEY)   ├── pyproject.toml         # Déclaration des dépendances et configuration pytest   ├── uv.lock                # Verrouillage reproductible des paquets Python   ├── app/   │   ├── main.py            # Point d'entrée FastAPI et branchement des routeurs   │   ├── config.py          # Seuils IGEBU, classification des zones et coordonnées   │   ├── core/   │   │   ├── db.py          # Client singleton MongoDB Atlas (PyMongo)   │   │   └── security.py    # Argon2id, JWT HS256, DUMMY_HASH anti-timing, get_current_user   │   ├── routes/   │   │   ├── token.py       # Endpoint POST /token (authentification OAuth2 Bearer)   │   │   ├── user.py        # Endpoint POST /user (inscription d'un nouvel utilisateur)   │   │   └── weather.py     # Endpoint sécurisé GET /{location} (collecte, agrégation, avis)   │   ├── schemas/   │   │   ├── security.py    # Schémas Pydantic Token et TokenData   │   │   ├── user.py        # Schémas User, NewUser, UserInDB   │   │   └── weather.py     # Enum Location (gitega, karusi, bujumbura, rutana, buja_rural_...)   │   └── services/   │       ├── advice.py      # MOTEUR PUR : évaluation des règles métier et conseils ISABU   │       ├── measures.py    # MOTEUR PUR : extraction mathématique des séries temporelles   │       └── weather.py     # Client réseau Open-Meteo & GloFAS avec cache SQLite   └── tests/       ├── test_advice.py     # 21 tests unitaires exhaustifs du moteur de décision       └── test_measures.py   # 10 tests unitaires du moteur d'extraction temporelle
+
+--- TABLE 26 ---
+class OpenMeteoWeatherService:     def __init__(self):         # Configuration d'un cache local persistant SQLite avec expiration à 1 heure         self.cache_session = requests_cache.CachedSession('.cache', expire_after=3600)         # Politique de relance : 5 tentatives automatiques avec facteur de recul exponentiel         self.retry_session = retry(self.cache_session, retries=5, backoff_factor=0.2)         # Client FlatBuffers binaire ultra-rapide         self.openmeteo = openmeteo_requests.Client(session=self.retry_session)
+
+--- TABLE 27 ---
+if culture == "riz":     # Surveillance des débits anormaux en bas-fond rizicole     if debit_prevu is not None and debit_ref is not None:         if debit_prevu > debit_ref:             regles.append("debit_inhabituel")             actions.append(                 "Le débit prévu est inhabituel pour ce point à cette période. "                 "Vérifiez les diguettes, les canaux et les accès du bas-fond. "                 "Une pluie normale n'est pas un problème pour le riz, mais un débit "                 "inhabituel justifie une vérification locale."             )     # Surveillance de l'engorgement sans crue majeure     if "debit_inhabituel" not in regles and pluie_72h is not None and pluie_72h >= seuil_72h:         regles.append("pluie_72h_riz")         actions.append(             "Surveillez l'accumulation d'eau dans les points bas du bas-fond "             "et vérifiez que les évacuations ne sont pas obstruées."         )
+
+--- TABLE 28 ---
+ARBORESCENCE DÉTAILLÉE DE WEATHER-APP   weather-app/   ├── package.json           # Dépendances Svelte 5, SvelteKit 3, Tailwind v4, Sveaflet   ├── vite.config.js         # Configuration Vite, compilateur Svelte (runes: true)   ├── src/   │   ├── app.html           # Gabarit HTML racine   │   ├── env.js             # Validation de BASE_URL (http://localhost:8000)   │   ├── lib/   │   │   └── components/   │   │       └── Leaflet.svelte # Carte interactive du Burundi (Sveaflet 0.1.5)   │   └── routes/   │       ├── +layout.server.js  # Garde serveur d'authentification (redirection /login)   │       ├── +layout.svelte     # Thème sombre Slate-950, barre de navigation, déconnexion   │       ├── +page.server.js    # ssr = false et action logout   │       ├── +page.svelte       # Hub d'accueil : sélection des 5 provinces et carte   │       ├── +error.svelte      # Écran d'erreur et redirection 3s sur 401/403   │       ├── login/             # Formulaire de connexion OAuth2 et stockage cookie HttpOnly   │       ├── signup/            # Formulaire d'inscription utilisateur   │       └── region/[slug]/     # Dashboard complet : graphiques svelteplot et avis ISABU
+
+--- TABLE 29 ---
+Fichier de Test | Fonction de Test Unitaire | Objectif & Scénario Validé | Statut d'Exécution
+test_advice.py | test_classement_zones | Vérifie l'affectation correcte des classes plaine/montagne pour Gitega, Karusi, etc. | PASSED (100%)
+test_advice.py | test_buja_rural_mixte | Valide le basculement Imbo (plaine) vs Mumirwa (montagne) et le repli de précaution. | PASSED (100%)
+test_advice.py | test_invalides | Vérifie la levée d'exceptions sur zone inconnue ou sous-zone erronée. | PASSED (100%)
+test_advice.py | test_pluie_24h_zone_montagne | Valide le déclenchement de l'alerte à 100 mm pour les zones de montagne. | PASSED (100%)
+test_advice.py | test_pluie_24h_zone_plaine_50_mm | Valide le déclenchement de l'alerte à 50 mm pour les zones de plaine. | PASSED (100%)
+test_advice.py | test_vent_bananier_40_kmh | Confirme l'alerte spécifique bananier dès que les rafales atteignent 40 km/h. | PASSED (100%)
+test_advice.py | test_sous_le_seuil_vent | Vérifie qu'aucun conseil n'est émis si le vent reste sous le seuil critique. | PASSED (100%)
+test_advice.py | test_jours_secs | Valide la détection d'une période sèche annoncée dès 5 jours consécutifs < 2 mm. | PASSED (100%)
+test_advice.py | test_riz_debit_inhabituel | Vérifie le message d'inspection des diguettes rizicoles si débit > p75. | PASSED (100%)
+test_advice.py | test_riz_pluie_sans_debit | Valide le conseil d'engorgement pour le riz si forte pluie 72h sans crue fluviale. | PASSED (100%)
+test_advice.py | test_humidite_7j_passes | Vérifie l'alerte pour haricot/manioc si les 7 jours passés dépassent 50 mm. | PASSED (100%)
+test_advice.py | test_patate_douce_mais_buttes | Vérifie la mention explicite de l'état des buttes pour la patate douce. | PASSED (100%)
+test_advice.py | test_sans_signal | Valide le statut nominal 'sans_signal' et le message probabiliste si aucun seuil dépassé. | PASSED (100%)
+test_advice.py | test_non_evalue_donnees_manquantes | Vérifie le passage en statut 'non_evalue' si une variable clé est absente (None). | PASSED (100%)
+test_advice.py | test_non_evalue_si_valeur_nan | Vérifie la conversion d'un float NaN en None et passage au statut 'non_evalue'. | PASSED (100%)
+test_advice.py | test_conseil_actif_reste_actif | Vérifie qu'une règle déclenchée reste active même si une autre donnée est absente. | PASSED (100%)
+test_advice.py | test_format_sortie | Contrôle la conformité de tous les champs retournés dans la structure du conseil. | PASSED (100%)
+test_advice.py | test_cultures_inconnue | Vérifie la levée d'une ValueError si une culture non répertoriée est demandée. | PASSED (100%)
+test_advice.py | test_generer_conseils_multi_zones | Valide la génération automatisée d'avis pour une collection de zones. | PASSED (100%)
+test_advice.py | test_cultures_prevalentes_zone | Contrôle la conformité de la matrice des cultures ISABU par province. | PASSED (100%)
+test_advice.py | test_generer_conseils_utilise_defaut | Vérifie l'évaluation automatique de toutes les cultures prévalentes locales. | PASSED (100%)
+test_measures.py | test_temps_calme | Valide le calcul de cumuls nuls et zéro rafale sur une série de temps calme. | PASSED (100%)
+test_measures.py | test_pluie_24h_et_72h | Contrôle l'exactitude de la sommation horaire sur les fenêtres 24h et 72h. | PASSED (100%)
+test_measures.py | test_bornes_fenetre_open_meteo | Vérifie le respect de l'intervalle ouvert à gauche (t0, t0+24h]. | PASSED (100%)
+test_measures.py | test_pluie_7j_passes | Valide la sommation des 168 pas de temps passés (t0-168h, t0]. | PASSED (100%)
+test_measures.py | test_valeur_manquante_mesure_non_evaluee | Confirme que toute série incomplète produit une mesure égale à None. | PASSED (100%)
+test_measures.py | test_jours_secs_trou_tardif | Vérifie la robustesse de détection des jours secs malgré un trou en fin de série. | PASSED (100%)
+test_measures.py | test_debit_prevu_et_reference | Valide l'extraction du débit maximum prévu 7j et du centile p75 sur 31j. | PASSED (100%)
+test_measures.py | test_blocs_absents | Vérifie la tolérance aux blocs météo totalement absents sans crash. | PASSED (100%)
+test_measures.py | test_dates_serialisees_json | Contrôle la sérialisation des dates ISO 8601 pour les échanges JSON. | PASSED (100%)
+test_measures.py | test_branchement_generer_conseil | Valide le pipeline complet reliant extraire_mesures() à generer_conseil(). | PASSED (100%)
+
+--- TABLE 30 ---
+Dimension d'Analyse | Spécification Initiale Cadrage MVP | Implémentation Réelle dans le Code | Qualification de l'Écart | Justification Technique & Rationale d'Ingénierie
+Périmètre et Découpage Territorial | 3 zones indicatives génériques (Rusizi, versants occidentaux, Gitega). | 5 zones pilotes provinciales réelles (Bujumbura Mairie, Bujumbura Rural, Gitega, Karusi, Rutana) scindées en 6 stations. | Amélioration Majeure & Affinement | Le passage à 5 anciennes provinces ancre le système dans l'organisation administrative burundaise. La scission de Bujumbura Rural en Imbo (plaine, seuil 50 mm) et Mumirwa (montagne, seuil 100 mm) avec règle de précaution résout fidèlement le gradient topographique extrême du pays.
+Base de Données et Persistance | Base de données relationnelle PostgreSQL (tables d'historiques horaires, clés étrangères, migrations Alembic). | MongoDB Atlas (Cloud NoSQL) pour les utilisateurs + Cache local SQLite (.cache.sqlite, TTL 1h) pour la météo. | Divergence Architecturale Majeure | Les prévisions météo horaires (168 points renouvelés sans cesse) sont ultra-périssables. Écrire des millions de lignes SQL était inadapté pour un cycle de 2 semaines. MongoDB offre une gestion fluide des profils, tandis que le cache SQLite élimine les coûts et la latence d'écriture SQL.
+Sécurité et Authentification | Évoquée succinctement sans spécification formelle (accès supposé ouvert ou basique). | Système complet de niveau industriel : OAuth2 Bearer, jetons JWT HS256, hash Argon2id (64 Mo RAM) et parade anti-timing attack (DUMMY_HASH). | Sur-Performance Qualifiée | L'équipe a surpassé les exigences initiales pour garantir la protection des bulletins et préparer la personnalisation des comptes d'agriculteurs. L'égalisation du temps de réponse serveur neutralise totalement les attaques par énumération d'utilisateurs.
+Glissements de Terrain (NASA LHASA) | Prévu : croisement d'une carte de sensibilité aux glissements NASA avec les pluies 24-72h. | Exclu et entièrement retiré du backend et du frontend (aucun conseil de glissement affiché). | Écart Assumé & Justifié Scientifiquement | La résolution kilométrique globale de NASA LHASA est incapable de résoudre les ruptures de pente collinaires burundaises. L'inclure aurait produit des alertes erronées ou anxiogènes. L'équipe a prudemment priorisé les risques directs vérifiables (crues et pluies).
+Cultures Agricoles & Recommandations | Catalogue statique rigide de 7 cultures fixes imposé uniformément à tout le pays. | Matrice dynamique par culture prévalente régionale ISABU (CULTURES_PAR_ZONE). | Amélioration Agronomique Concrète | Au lieu d'afficher 7 cultures partout, l'interface sélectionne automatiquement les cultures dominantes de la province (ex. thé/pomme de terre sur Mumirwa, riz/manioc en plaine Imbo), évitant la surcharge cognitive des producteurs.
+Référence Hydrologique GloFAS | 90e percentile historique mensuel des anciennes années. | 75e percentile des 31 derniers jours glissants (daily: river_discharge_p75). | Adaptation Statistique Pragmatique | L'extraction du p90 centennal nécessitait des archives lourdes indisponibles sous API rapide. Le p75 sur 31 jours glissants fournit un indicateur d'anomalie hydrologique dynamique et réactif calculable immédiatement.
+Données Pluviométriques CHIRPS | Intégration des séries satellitaires CHIRPS v3 pour les historiques. | Remplacé par le paramètre past_days=7 d'Open-Meteo. | Simplification d'Ingénierie | Open-Meteo fournit sur le même endpoint les 7 jours passés et futurs dans le même référentiel temporel, garantissant un alignement parfait sans dépendance externe superflue.
+Visualisation Graphique Frontend | Bibliothèque Plotly.js ou équivalent lourd. | Bibliothèque svelteplot (tracés vectoriels réactifs SVG déclaratifs). | Optimisation de Performance | svelteplot est infiniment plus léger et performant sur terminal mobile que Plotly, produisant des graphiques réactifs parfaitement intégrés à Tailwind CSS.
+
+--- TABLE 31 ---
+Vision Stratégique du Projet : Les perspectives de deuxième année positionnent AgroMétéo Burundi comme le futur socle d'un Système National d'Alerte Précoce Agro-Climatique décentralisé, au service exclusif de la souveraineté alimentaire et du bien-être des populations rurales du Burundi.
+
+--- TABLE 32 ---
+Identifiant | Acteur Primaire | Cas d'Utilisation | Préconditions | Postconditions | Flux Nominal
+CU-01 | Visiteur / Agriculteur | S'inscrire | Aucune session active | Compte créé en MongoDB Atlas | Saisie nom, email, mot de passe -> Hash Argon2id -> Insertion.
+CU-02 | Utilisateur | S'authentifier | Compte existant en base | Jeton JWT émis en Cookie HttpOnly | Saisie credentials -> Vérification anti-timing -> Émission JWT HS256.
+CU-03 | Utilisateur authentifié | Consulter carte nationale | Session JWT valide | Affichage carte Leaflet tuilée | Rendu des 6 marqueurs avec fond OpenStreetMap centré sur le Burundi.
+CU-04 | Utilisateur authentifié | Sélectionner station/zone | Carte ou menu affiché | Redirection route /region/[slug] | Sélection de la province (ex. Gitega, Karusi, Buja Rural Imbo/Mumirwa).
+CU-05 | Utilisateur authentifié | Visualiser séries météo | Station sélectionnée | Graphiques interactifs svelteplot | Bascule entre onglets T°, Pluie, Vent, Probabilité avec tooltips temporels.
+CU-06 | Utilisateur authentifié | Consulter avis ISABU | Station sélectionnée | Fiches conseils filtrées | Filtrage par culture locale et lecture des actions concrètes.
+CU-07 | Utilisateur authentifié | Auditer mesures & seuils | Conseil affiché | Fenêtre modale ouverte | Affichage des jauges de dépassement valeur/seuil et limitations du modèle.
+CU-08 | Utilisateur authentifié | Se déconnecter | Session active | Cookie purgé, redirection /login | Soumission action serveur /?/logout -> Suppression du cookie HttpOnly.
+
+--- TABLE 33 ---
+État Source | Événement / Condition Déclenchante | Action Exécutée | État Cible
+Initial | Réception séries météo brutes d'Open-Meteo et GloFAS | Vérification d'intégrité et complétude des données | En Évaluation
+En Évaluation | Présence d'au moins une valeur manquante (None / NaN) | Génération message d'indisponibilité et mise en garde | Non Évalué
+En Évaluation | Toutes séries complètes ET au moins un seuil franchi | Construction du message d'action pragmatique par culture | Conseil Actif
+En Évaluation | Toutes séries complètes ET aucun seuil critique franchi | Construction du message probabiliste de vigilance normale | Sans Signal
+Non Évalué | Arrivée d'un nouveau flux complet lors du rafraîchissement | Réévaluation automatique du moteur pur | En Évaluation
+
+--- TABLE 34 ---
+Champ BSON | Type BSON / Python | Index & Contrainte | Description et Rôle Fonctionnel
+_id | ObjectId | Clé Primaire Unique (PK) | Identifiant immuable généré automatiquement par le cluster MongoDB Atlas.
+username | string (format Email) | Index Unique Recommandé | Identifiant unique de connexion de l'utilisateur (ex. moniteur.gitega@agrometeo.bi).
+name | string | Index Simple Optionnel | Nom complet et prénom de l'opérateur agricole (ex. Pierre Nkurunziza).
+hashed_password | string | Aucun | Empreinte cryptographique générée par l'algorithme Argon2id (v=19, m=65536, t=3, p=4).
+
+--- TABLE 35 ---
+Table SQLite | Nom de Colonne | Type SQL | Contrainte | Rôle Technique
+responses | key | TEXT | PRIMARY KEY | Hachage unique SHA-256 de l'URL de requête HTTP et de ses paramètres.
+responses | value | BLOB | NOT NULL | Charge utile binaire compressée de la réponse HTTP renvoyée par Open-Meteo.
+responses | expires | REAL | INDEXED | Horodatage d'expiration (timestamp Unix) fixé à t_creation + 3600 secondes.
+redirects | key | TEXT | PRIMARY KEY | Hachage de l'URL de redirection initiale.
+redirects | value | TEXT | NOT NULL | URL cible résolue après redirection HTTP 301/302.
+
+--- TABLE 36 ---
+cd c:\Users\PC\Desktop\Projects\weather-backend
+
+--- TABLE 37 ---
+DB_CONNECTION_STRING="mongodb+srv://<user>:<password>@cluster0.3iilu.mongodb.net/?retryWrites=true&w=majority" DB="weather-app" SECRET_KEY="votre_cle_secrete_jwt_super_robuste_generee_aleatoirement" ALGORITHM="HS256" ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+--- TABLE 38 ---
+uv sync uv run pytest -v
+
+--- TABLE 39 ---
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+--- TABLE 40 ---
+cd c:\Users\PC\Desktop\Projects\weather-app
+
+--- TABLE 41 ---
+BASE_URL=http://localhost:8000
+
+--- TABLE 42 ---
+npm install npm run dev
+
+--- TABLE 43 ---
+Projet / Module | Langage Principal | Nombre de Fichiers | Lignes de Code Brutes (LOC) | Lignes de Code Net (SLOC) | Rôle Principal
+weather-backend / app | Python 3.14 | 16 fichiers | 1 450 | 1 180 | Routes FastAPI, Core Sécurité, Services purs measures & advice.
+weather-backend / tests | Python (pytest) | 2 fichiers | 480 | 410 | 31 tests unitaires exhaustifs du moteur de décision et mesures.
+weather-app / src/routes | Svelte 5 / JS | 12 fichiers | 1 850 | 1 520 | Routes BFF (+page.server.js) et pages d'interface UI.
+weather-app / src/lib | Svelte 5 / JS | 4 fichiers | 320 | 260 | Composant cartographique Leaflet et utilitaires partagés.
+Fichiers de Config & Build | JSON, TOML, JS | 10 fichiers | 520 | 460 | pyproject.toml, package.json, vite.config.js, eslint, prettier.
+TOTAL PROJET | Python + Svelte/JS | 44 fichiers | 4 620 | 3 830 | Ensemble du Système AgroMétéo Burundi.
+
+--- TABLE 44 ---
+git init git add . git commit -m "Initial commit: Systeme de veille meteo et climatique au Burundi (AgroMeteo Burundi)" git branch -M main
