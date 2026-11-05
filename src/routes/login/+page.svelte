@@ -1,9 +1,11 @@
 <script>
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 
 	let { form } = $props();
 	let loading = $state(false);
 	let showPassword = $state(false);
+	const registered = $derived(page.url.searchParams.get('registered') === 'true');
 </script>
 
 <div class="relative flex-1 flex items-center justify-center min-h-screen px-4 py-12 overflow-hidden bg-slate-950">
@@ -27,6 +29,15 @@
 
 		<!-- Login Card -->
 		<div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 sm:p-8 shadow-2xl">
+			{#if registered && !form?.error}
+				<div class="mb-5 flex items-start gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-4 py-3 text-xs text-emerald-300">
+					<svg class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					<span>Votre compte a été créé avec succès. Veuillez vous connecter pour continuer.</span>
+				</div>
+			{/if}
+
 			{#if form?.error}
 				<div class="mb-5 flex items-start gap-3 rounded-xl bg-rose-500/10 border border-rose-500/30 px-4 py-3 text-xs text-rose-300">
 					<svg class="w-4 h-4 text-rose-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
